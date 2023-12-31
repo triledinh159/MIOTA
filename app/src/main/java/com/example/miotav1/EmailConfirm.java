@@ -60,6 +60,8 @@ public class EmailConfirm extends AppCompatActivity {
 
     private void onLoginSuccess(AuthSignInResult authSignInResult) {
         Intent intent = new Intent(this, Home.class);
+        startActivity(intent);
+        finish();
     }
 
     private <T extends Model> void onSavedSuccess(DataStoreItemChange<T> tDataStoreItemChange) {

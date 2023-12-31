@@ -1,32 +1,6 @@
 {
-  "api": {
-    "miotav1": {
-      "dependsOn": [
-        {
-          "attributes": [
-            "UserPoolId"
-          ],
-          "category": "auth",
-          "resourceName": "miotav13ef554dd"
-        }
-      ],
-      "output": {
-        "authConfig": {
-          "additionalAuthenticationProviders": [],
-          "defaultAuthentication": {
-            "authenticationType": "AMAZON_COGNITO_USER_POOLS",
-            "userPoolConfig": {
-              "userPoolId": "authmiotav13ef554dd"
-            }
-          }
-        }
-      },
-      "providerPlugin": "awscloudformation",
-      "service": "AppSync"
-    }
-  },
   "auth": {
-    "miotav13ef554dd": {
+    "miotav1dff86e70": {
       "customAuth": false,
       "dependsOn": [],
       "frontendAuthConfig": {

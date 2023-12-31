@@ -8,41 +8,62 @@
 
     <TextView
         android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="132dp"
-        android:text="Confirm Your Email"
+        android:layout_width="343dp"
+        android:layout_height="53dp"
+        android:layout_marginTop="15dp"
+        android:fontFamily="@font/inter_bold"
+        android:text="VERIFY YOUR EMAIL"
+        android:textColor="@color/bluefont"
         android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="344dp"
+        android:layout_height="40dp"
+        android:text="Enter the confirmation code sent by email to verify your account"
+        android:textSize="15dp"
+        app:layout_constraintEnd_toEndOf="@+id/textView2"
+        app:layout_constraintStart_toStartOf="@+id/textView2"
+        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+
     <EditText
         android:id="@+id/txtConfirmationCode"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="124dp"
+        android:layout_width="337dp"
+        android:layout_height="77dp"
         android:ems="10"
         android:hint="Confirmation Code"
         android:inputType="number"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+        app:layout_constraintEnd_toEndOf="@+id/textView3"
+        app:layout_constraintStart_toStartOf="@+id/textView3"
+        app:layout_constraintTop_toBottomOf="@+id/textView3"></EditText>
 
     <Button
         android:id="@+id/btnConfirm"
-        android:layout_width="206dp"
-        android:layout_height="43dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginBottom="340dp"
-        android:background="@color/colorPrimary"
+        android:layout_width="259dp"
+        android:layout_height="47dp"
+        android:layout_marginBottom="360dp"
+        android:background="@drawable/rounded_button"
+        android:fontFamily="@font/inter_bold"
         android:onClick="onConfirmButtonPressed"
-        android:text="Confirm"
+        android:text="VERIFY "
         android:textColor="#FFFFFF"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/txtConfirmationCode"
+        app:layout_constraintStart_toStartOf="@+id/txtConfirmationCode"
+        app:layout_constraintTop_toBottomOf="@+id/txtConfirmationCode" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/logo"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.517"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtConfirmationCode"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@+id/btnConfirm" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

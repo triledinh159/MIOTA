@@ -1,12 +1,6 @@
 export type AmplifyDependentResourcesAttributes = {
-  "api": {
-    "miotav1": {
-      "GraphQLAPIEndpointOutput": "string",
-      "GraphQLAPIIdOutput": "string"
-    }
-  },
   "auth": {
-    "miotav13ef554dd": {
+    "miotav1dff86e70": {
       "AppClientID": "string",
       "AppClientIDWeb": "string",
       "IdentityPoolId": "string",

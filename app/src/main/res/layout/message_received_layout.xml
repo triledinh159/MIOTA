@@ -17,7 +17,6 @@
         android:textSize="20dp"
         android:padding="10dp"
         android:layout_alignParentEnd="false"
-        android:background="@drawable/rounded_corner_received"
         android:textColor="#fff"
         tools:layout_editor_absoluteX="16dp"
         tools:layout_editor_absoluteY="16dp" />

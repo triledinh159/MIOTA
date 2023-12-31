@@ -10,7 +10,11 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven {
+            url "https://repo.eclipse.org/content/repositories/paho-releases/"
+        }
     }
 }
+
 rootProject.name = "MIOTAv1"
 include ':app'
