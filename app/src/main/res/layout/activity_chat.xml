@@ -38,6 +38,6 @@
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="4dp"
         android:layout_marginBottom="1dp"
-        app:srcCompat="@drawable/send_icon"
+
         android:onClick="onClickSendMessage" />
 </RelativeLayout>

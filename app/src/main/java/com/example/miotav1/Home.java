@@ -27,15 +27,15 @@ public class Home extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
+        setContentView(R.layout.activity_home_screen);
 
-        // Set up the Signout button click listener
-        findViewById(R.id.btnSignOut).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                signOut(); // Make sure this method is being called
-            }
-        });
+//        // Set up the Signout button click listener
+//        findViewById(R.id.btnSignOut).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                signOut(); // Make sure this method is being called
+//            }
+//        });
 
 //        MqttConnectOptions options = new MqttConnectOptions();
 //        options.setUserName("triledinh159");

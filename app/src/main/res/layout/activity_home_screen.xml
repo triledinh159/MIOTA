@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.motion.widget.MotionLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layoutDescription="@xml/activity_homescreen_scene">
+
+    <androidx.constraintlayout.helper.widget.Layer
+        android:id="@+id/layer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="imageView10,home,iot_device,imageView,rectangle_2,imageView7"
+        tools:layout_editor_absoluteX="-49dp"
+        tools:layout_editor_absoluteY="46dp" />
+
+    <ImageView
+        android:id="@+id/imageView10"
+        android:layout_width="447dp"
+        android:layout_height="642dp"
+        app:srcCompat="@drawable/background_01_2"
+        tools:layout_editor_absoluteX="-11dp"
+        tools:layout_editor_absoluteY="77dp" />
+
+    <TextView
+        android:id="@+id/home"
+        android:layout_width="74dp"
+        android:layout_height="38dp"
+        android:fontFamily="@font/inter_bold"
+        android:gravity="center_horizontal|top"
+        android:lineSpacingExtra="9sp"
+        android:text="HOME"
+        android:textColor="@color/bluefont"
+        android:textSize="24sp"
+        android:translationY="-4.68sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/menu_button"
+        tools:layout_editor_absoluteY="16dp" />
+
+    <TextView
+        android:id="@+id/iot_device"
+        android:layout_width="185dp"
+        android:layout_height="51dp"
+        android:fontFamily="@font/inter_bold"
+        android:gravity="top"
+        android:lineSpacingExtra="12sp"
+        android:text="IOT DEVICE"
+        android:textColor="#6078F8"
+        android:textSize="32sp"
+        android:translationY="-6.24sp"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="26dp"
+        tools:layout_editor_absoluteY="93dp" />
+
+    <ImageButton
+        android:id="@+id/add_device_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/no_shadow_background"
+        app:srcCompat="@drawable/plus_square_filled"
+        tools:layout_editor_absoluteX="332dp"
+        tools:layout_editor_absoluteY="670dp" />
+
+    <ImageView
+        android:id="@+id/imageView9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/miota_logo_1"
+        tools:layout_editor_absoluteX="2dp"
+        tools:layout_editor_absoluteY="652dp" />
+
+    <ImageButton
+        android:id="@+id/menu_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/no_shadow_background"
+        app:srcCompat="@drawable/menu_bold"
+        tools:layout_editor_absoluteX="55dp"
+        tools:layout_editor_absoluteY="20dp" />
+
+    <ImageView
+        android:id="@+id/rectangleView"
+        android:layout_width="348dp"
+        android:layout_height="287dp"
+        android:layout_marginTop="196dp"
+        android:background="@drawable/gradient_rectangle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/id_sensor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:fontFamily="@font/inter_bold"
+        android:text="DHT11"
+        android:textColor="@color/lightblue"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="@id/rectangleView"
+        app:layout_constraintEnd_toEndOf="@id/rectangleView"
+        app:layout_constraintStart_toStartOf="@id/rectangleView"
+        app:layout_constraintTop_toTopOf="@id/rectangleView" />
+
+    <TextView
+        android:id="@+id/name_sensor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:fontFamily="@font/inter_bold"
+        android:text="CẢM BIẾN NHIỆT"
+        android:textColor="@color/lightblue"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@id/rectangleView"
+        app:layout_constraintEnd_toEndOf="@id/rectangleView"
+        app:layout_constraintStart_toStartOf="@id/rectangleView"
+        app:layout_constraintTop_toTopOf="@id/rectangleView" />
+
+    <ImageView
+        android:id="@+id/connected_wifi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/rectangleView"
+        app:layout_constraintEnd_toEndOf="@id/rectangleView"
+        app:layout_constraintStart_toStartOf="@id/rectangleView"
+        app:layout_constraintTop_toTopOf="@id/rectangleView"
+        app:srcCompat="@drawable/wifi" />
+
+    <TextView
+        android:id="@+id/connected"
+        android:layout_width="91dp"
+        android:layout_height="21dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="214dp"
+        android:layout_marginTop="66dp"
+        android:fontFamily="@font/inter_bold"
+        android:gravity="center_horizontal|top"
+        android:lineSpacingExtra="5sp"
+        android:text="CONNECTED"
+        android:textColor="@color/lightblue"
+        android:translationY="-2.73sp"
+        app:layout_constraintBottom_toBottomOf="@id/rectangleView"
+        app:layout_constraintEnd_toEndOf="@id/rectangleView"
+        app:layout_constraintHorizontal_bias="0.893"
+        app:layout_constraintStart_toStartOf="@id/rectangleView"
+        app:layout_constraintTop_toTopOf="@id/rectangleView"
+        app:layout_constraintVertical_bias="0.454" />
+
+    <TextView
+        android:id="@+id/temp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:text="28°"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@id/rectangleView"
+        app:layout_constraintEnd_toEndOf="@id/rectangleView"
+        app:layout_constraintStart_toStartOf="@id/rectangleView"
+        app:layout_constraintTop_toTopOf="@id/rectangleView" />
+
+    <TextView
+        android:id="@+id/humidity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:text="60%"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@id/rectangleView"
+        app:layout_constraintEnd_toEndOf="@id/rectangleView"
+        app:layout_constraintStart_toStartOf="@id/rectangleView"
+        app:layout_constraintTop_toTopOf="@id/rectangleView" />
+
+    <ImageView
+        android:id="@+id/temp_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/rectangleView"
+        app:layout_constraintEnd_toEndOf="@id/rectangleView"
+        app:layout_constraintHorizontal_bias="0.169"
+        app:layout_constraintStart_toStartOf="@id/rectangleView"
+        app:layout_constraintTop_toTopOf="@id/rectangleView"
+        app:layout_constraintVertical_bias="0.52"
+        app:srcCompat="@drawable/temp" />
+
+    <ImageView
+        android:id="@+id/humidity_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/rectangleView"
+        app:layout_constraintEnd_toEndOf="@id/rectangleView"
+        app:layout_constraintHorizontal_bias="0.169"
+        app:layout_constraintStart_toStartOf="@id/rectangleView"
+        app:layout_constraintTop_toTopOf="@id/rectangleView"
+        app:layout_constraintVertical_bias="0.52"
+        app:srcCompat="@drawable/hum" />
+
+    <ImageView
+        android:id="@+id/rectangleView2"
+        android:layout_width="200dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="348dp"
+        android:background="@drawable/gradient_rectangle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/name_sensor_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:fontFamily="@font/inter_bold"
+        android:text="CẢM BIẾN AS"
+        android:textColor="@color/lightblue"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@id/rectangleView2"
+        app:layout_constraintEnd_toEndOf="@id/rectangleView2"
+        app:layout_constraintStart_toStartOf="@id/rectangleView2"
+        app:layout_constraintTop_toTopOf="@id/rectangleView2" />
+
+    <TextView
+        android:id="@+id/disconnected"
+        android:layout_width="117dp"
+        android:layout_height="21dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="198dp"
+        android:layout_marginTop="71dp"
+        android:fontFamily="@font/inter_bold"
+        android:gravity="center_horizontal|top"
+        android:lineSpacingExtra="5sp"
+        android:text="DISCONNECTED"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="14sp"
+        android:translationY="-2.73sp"
+        app:layout_constraintBottom_toBottomOf="@id/rectangleView2"
+        app:layout_constraintEnd_toEndOf="@id/rectangleView2"
+        app:layout_constraintStart_toStartOf="@id/rectangleView2"
+        app:layout_constraintTop_toTopOf="@id/rectangleView2" />
+
+    <ImageView
+        android:id="@+id/disconnected_wifi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/rectangleView2"
+        app:layout_constraintEnd_toEndOf="@id/rectangleView2"
+        app:layout_constraintStart_toStartOf="@id/rectangleView2"
+        app:layout_constraintTop_toTopOf="@id/rectangleView2"
+        app:srcCompat="@drawable/disconnected" />
+
+    <TextView
+        android:id="@+id/id_sensor2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:fontFamily="@font/inter_bold"
+        android:text="BHT1750"
+        android:textColor="@color/lightblue"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="@id/rectangleView2"
+        app:layout_constraintEnd_toEndOf="@id/rectangleView2"
+        app:layout_constraintStart_toStartOf="@id/rectangleView2"
+        app:layout_constraintTop_toTopOf="@id/rectangleView2" />
+
+    <ImageView
+        android:id="@+id/light_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/rectangleView2"
+        app:layout_constraintEnd_toEndOf="@id/rectangleView2"
+        app:layout_constraintStart_toStartOf="@id/rectangleView2"
+        app:layout_constraintTop_toTopOf="@id/rectangleView2"
+        app:srcCompat="@drawable/light" />
+
+    <TextView
+        android:id="@+id/light"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:text="100"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@id/rectangleView2"
+        app:layout_constraintEnd_toEndOf="@id/rectangleView2"
+        app:layout_constraintStart_toStartOf="@id/rectangleView2"
+        app:layout_constraintTop_toTopOf="@id/rectangleView2" />
+
+    <ImageView
+        android:id="@+id/rectangleView3"
+        android:layout_width="200dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="348dp"
+        android:background="@drawable/gradient_rectangle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/name_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:fontFamily="@font/inter_bold"
+        android:text="ĐÈN PHÒNG NGỦ"
+        android:textColor="@color/lightblue"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@id/rectangleView3"
+        app:layout_constraintEnd_toEndOf="@id/rectangleView3"
+        app:layout_constraintStart_toStartOf="@id/rectangleView3"
+        app:layout_constraintTop_toTopOf="@id/rectangleView3" />
+
+    <TextView
+        android:id="@+id/id_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:fontFamily="@font/inter_bold"
+        android:text="ID001"
+        android:textColor="@color/lightblue"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="@id/rectangleView3"
+        app:layout_constraintEnd_toEndOf="@id/rectangleView3"
+        app:layout_constraintStart_toStartOf="@id/rectangleView3"
+        app:layout_constraintTop_toTopOf="@id/rectangleView3" />
+
+    <ImageView
+        android:id="@+id/connected_wifi1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/rectangleView3"
+        app:layout_constraintEnd_toEndOf="@id/rectangleView3"
+        app:layout_constraintStart_toStartOf="@id/rectangleView3"
+        app:layout_constraintTop_toTopOf="@id/rectangleView3"
+        app:srcCompat="@drawable/wifi" />
+
+    <TextView
+        android:id="@+id/connected1"
+        android:layout_width="91dp"
+        android:layout_height="21dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="214dp"
+        android:layout_marginTop="66dp"
+        android:fontFamily="@font/inter_bold"
+        android:gravity="center_horizontal|top"
+        android:lineSpacingExtra="5sp"
+        android:text="CONNECTED"
+        android:textColor="@color/lightblue"
+        android:translationY="-2.73sp"
+        app:layout_constraintBottom_toBottomOf="@id/rectangleView3"
+        app:layout_constraintEnd_toEndOf="@id/rectangleView3"
+        app:layout_constraintHorizontal_bias="0.828"
+        app:layout_constraintStart_toStartOf="@id/rectangleView3"
+        app:layout_constraintTop_toTopOf="@id/rectangleView3"
+        app:layout_constraintVertical_bias="0.266" />
+
+    <Switch
+        android:id="@+id/mySwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checked="true"
+        android:padding="10dp"
+        android:theme="@style/mySwitch"
+        android:thumb="@drawable/thumb_selector"
+        android:track="@drawable/track_selector"
+        app:layout_constraintBottom_toBottomOf="@+id/rectangleView3"
+        app:layout_constraintEnd_toEndOf="@id/rectangleView3"
+        app:layout_constraintStart_toStartOf="@id/rectangleView3"
+        app:layout_constraintTop_toTopOf="@id/rectangleView3" />
+
+</androidx.constraintlayout.motion.widget.MotionLayout>
