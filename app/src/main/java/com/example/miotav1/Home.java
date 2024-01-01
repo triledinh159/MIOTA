@@ -27,7 +27,16 @@ public class Home extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_device);
+        setContentView(R.layout.activity_home_screen);
+//        ImageButton addDeviceButton = findViewById(R.id.add_device_button);
+//        addDeviceButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                // Xử lý khi nút được nhấn
+//                Intent intent = new Intent(Home.this, AddDeviceActivity.class);
+//                startActivity(intent);
+//            }
+//        });
 
 //        // Set up the Signout button click listener
 //        findViewById(R.id.btnSignOut).setOnClickListener(new View.OnClickListener() {
