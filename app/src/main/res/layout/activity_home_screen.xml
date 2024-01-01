@@ -360,15 +360,16 @@
         app:layout_constraintTop_toTopOf="@id/rectangleView3"
         app:layout_constraintVertical_bias="0.266" />
 
-    <Switch
+    <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/mySwitch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:checked="true"
+        android:checked="false"
         android:padding="10dp"
-        android:theme="@style/mySwitch"
-        android:thumb="@drawable/thumb_selector"
-        android:track="@drawable/track_selector"
+        app:thumbTint="@null"
+        app:trackTint="@null"
+        android:thumb="@drawable/thumb"
+        app:track="@drawable/track"
         app:layout_constraintBottom_toBottomOf="@+id/rectangleView3"
         app:layout_constraintEnd_toEndOf="@id/rectangleView3"
         app:layout_constraintStart_toStartOf="@id/rectangleView3"

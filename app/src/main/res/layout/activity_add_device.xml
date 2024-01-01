@@ -177,13 +177,41 @@
         app:layout_constraintStart_toStartOf="@id/add_device_option"
         app:layout_constraintTop_toTopOf="@id/add_device_option" />
 
-    <ImageButton
-        android:id="@+id/type_device_button"
+    <CheckBox
+        android:id="@+id/checkbox_collect"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/no_shadow_background"
+        android:button="@null"
+        android:checked="true"
+        android:drawableRight="@drawable/checkbox"
+        android:fontFamily="@font/inter_bold"
+        android:text="Collect"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@id/add_device_option"
+        app:layout_constraintEnd_toEndOf="@id/add_device_option"
+        app:layout_constraintHorizontal_bias="0.482"
+        app:layout_constraintStart_toStartOf="@id/add_device_option"
+        app:layout_constraintTop_toTopOf="@id/add_device_option"
+        app:layout_constraintVertical_bias="0.125" />
 
-        app:srcCompat="@drawable/type_device" />
+    <CheckBox
+        android:id="@+id/checkbox_control"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:button="@null"
+        android:checked="false"
+        android:drawableRight="@drawable/checkbox"
+        android:fontFamily="@font/inter_bold"
+        android:text="Control"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@id/add_device_option"
+        app:layout_constraintEnd_toEndOf="@id/add_device_option"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@id/add_device_option"
+        app:layout_constraintTop_toTopOf="@id/add_device_option"
+        app:layout_constraintVertical_bias="0.125" />
 
     <EditText
         android:id="@+id/topic_sensor_add"
