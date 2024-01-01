@@ -53,12 +53,12 @@
 
     <ImageButton
         android:id="@+id/imageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="37dp"
+        android:layout_height="23dp"
         android:background="@drawable/no_shadow_background"
-        app:layout_constraintEnd_toStartOf="@+id/add_device"
+        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/menu_bold"
-        tools:layout_editor_absoluteY="24dp" />
+        tools:layout_editor_absoluteX="33dp" />
 
     <Button
         android:id="@+id/confirm"

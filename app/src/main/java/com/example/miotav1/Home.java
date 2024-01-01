@@ -27,7 +27,7 @@ public class Home extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home_screen);
+        setContentView(R.layout.activity_add_device);
 
 //        // Set up the Signout button click listener
 //        findViewById(R.id.btnSignOut).setOnClickListener(new View.OnClickListener() {
