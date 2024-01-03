@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -10,41 +11,80 @@
 
   <Button
       android:id="@+id/btnSignOut"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
+      android:layout_width="114dp"
+      android:layout_height="53dp"
       android:layout_alignParentTop="true"
       android:layout_alignParentEnd="true"
       android:layout_marginTop="16dp"
-      android:layout_marginEnd="16dp"
-      android:text="Sign Out" />
+      android:background="@drawable/rounded_button"
+      android:text="Sign Out"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintHorizontal_bias="0.103"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+
+  <ImageView
+      android:id="@+id/dashboard"
+      android:layout_width="390dp"
+      android:layout_height="402dp"
+      android:background="@drawable/gradient_rectangle"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintHorizontal_bias="0.539"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
 
   <Button
       android:id="@+id/btnPublish"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_marginTop="16dp"
-      android:text="Publish" />
+      android:layout_width="110dp"
+      android:layout_height="48dp"
+      android:background="@drawable/rounded_button"
+      android:fontFamily="@font/inter_bold"
+      android:text="Publish"
+      app:layout_constraintBottom_toBottomOf="@+id/dashboard"
+      app:layout_constraintEnd_toEndOf="@+id/dashboard"
+      app:layout_constraintHorizontal_bias="0.078"
+      app:layout_constraintStart_toStartOf="@+id/dashboard"
+      app:layout_constraintTop_toTopOf="@+id/dashboard"
+      app:layout_constraintVertical_bias="0.949" />
 
   <TextView
       android:id="@+id/tvReceivedMessage"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginTop="60dp"
-      android:text="Received Message will appear here" />
+      android:fontFamily="@font/inter_bold"
+      android:text="Received Message will appear here"
+      android:textColor="@color/switch_off"
+      app:layout_constraintBottom_toBottomOf="@+id/dashboard"
+      app:layout_constraintEnd_toEndOf="@+id/dashboard"
+      app:layout_constraintHorizontal_bias="0.141"
+      app:layout_constraintStart_toStartOf="@+id/dashboard"
+      app:layout_constraintTop_toTopOf="@+id/dashboard"
+      app:layout_constraintVertical_bias="0.036" />
 
   <com.github.mikephil.charting.charts.LineChart
       android:id="@+id/chart"
-      android:layout_marginTop="160dp"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent" />
+      android:layout_width="349dp"
+      android:layout_height="219dp"
+      app:layout_constraintBottom_toBottomOf="@+id/dashboard"
+      app:layout_constraintEnd_toEndOf="@+id/dashboard"
+      app:layout_constraintStart_toStartOf="@+id/dashboard"
+      app:layout_constraintTop_toTopOf="@+id/dashboard" />
 
   <Button
       android:id="@+id/btnToggleChart"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_below="@+id/btnPublish"
-      android:layout_marginTop="16dp"
-      android:text="Toggle Chart Visibility" />
+      android:background="@drawable/rounded_button"
+      android:fontFamily="@font/inter_bold"
+      android:text="Toggle Chart Visibility"
+      app:layout_constraintBottom_toBottomOf="@+id/dashboard"
+      app:layout_constraintEnd_toEndOf="@+id/dashboard"
+      app:layout_constraintHorizontal_bias="0.892"
+      app:layout_constraintStart_toStartOf="@+id/dashboard"
+      app:layout_constraintTop_toTopOf="@+id/dashboard"
+      app:layout_constraintVertical_bias="0.949" />
 
 
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,4 +4,9 @@
     <color name="colorPrimaryDark">#E16300</color>
     <color name="colorAccent">#232f3e</color>
     <color name="bluefont">#4C69E3</color>
+    <color name="black">#000000</color>
+    <color name="black42">#6A000000</color>
+    <color name="lightblue">#00FFFF</color>
+    <color name="switch_on">#FFEEB2</color>
+    <color name="switch_off">#AFCAFF</color>
 </resources>
