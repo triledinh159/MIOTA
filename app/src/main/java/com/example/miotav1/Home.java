@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
 import com.amplifyframework.auth.cognito.result.AWSCognitoAuthSignOutResult;
@@ -17,13 +16,6 @@ import com.amplifyframework.auth.cognito.result.GlobalSignOutError;
 import com.amplifyframework.auth.cognito.result.HostedUIError;
 import com.amplifyframework.auth.cognito.result.RevokeTokenError;
 import com.amplifyframework.core.Amplify;
-
-import org.eclipse.paho.android.service.MqttAndroidClient;
-import org.eclipse.paho.client.mqttv3.IMqttActionListener;
-import org.eclipse.paho.client.mqttv3.IMqttToken;
-import org.eclipse.paho.client.mqttv3.MqttClient;
-import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
-import org.eclipse.paho.client.mqttv3.MqttException;
 
 public class Home extends AppCompatActivity {
     private DrawerLayout mDrawerLayout;
@@ -40,6 +32,15 @@ public class Home extends AppCompatActivity {
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.nav_drawer_open, R.string.nav_drawer_close);
         mDrawerLayout.addDrawerListener(toggle);
         toggle.syncState();
+//        ImageButton addDeviceButton = findViewById(R.id.add_device_button);
+//        addDeviceButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                // Xử lý khi nút được nhấn
+//                Intent intent = new Intent(Home.this, AddDeviceActivity.class);
+//                startActivity(intent);
+//            }
+//        });
 
 //        // Set up the Signout button click listener
 //        findViewById(R.id.btnSignOut).setOnClickListener(new View.OnClickListener() {
