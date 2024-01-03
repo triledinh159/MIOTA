@@ -9,4 +9,5 @@
     <color name="lightblue">#00FFFF</color>
     <color name="switch_on">#FFEEB2</color>
     <color name="switch_off">#AFCAFF</color>
+    <color name="white">#FFFFFF</color>
 </resources>
