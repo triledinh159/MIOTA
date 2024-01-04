@@ -207,6 +207,6 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
             finish();
         }
         mDrawerLayout.closeDrawer(GravityCompat.START);
-        return false;
+        return true;
     }
 }
