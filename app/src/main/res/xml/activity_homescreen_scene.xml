@@ -259,7 +259,7 @@
             android:id="@+id/menu_button"
             motion:layout_constraintStart_toStartOf="parent"
             motion:layout_constraintEnd_toStartOf="@+id/home"
-            motion:layout_constraintHorizontal_bias="0.2" />
+            motion:layout_constraintHorizontal_bias="0.123" />
         <Constraint
             motion:layout_constraintVertical_bias="0.454"
             android:layout_height="21dp"

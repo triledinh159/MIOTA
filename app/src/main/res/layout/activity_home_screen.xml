@@ -69,15 +69,6 @@
         tools:layout_editor_absoluteX="2dp"
         tools:layout_editor_absoluteY="652dp" />
 
-    <ImageButton
-        android:id="@+id/menu_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/no_shadow_background"
-        app:srcCompat="@drawable/menu_bold"
-        tools:layout_editor_absoluteX="55dp"
-        tools:layout_editor_absoluteY="20dp" />
-
     <ImageView
         android:id="@+id/rectangleView"
         android:layout_width="348dp"
