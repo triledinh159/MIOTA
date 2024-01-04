@@ -1,20 +1,18 @@
 package com.example.miotav1;
 
-import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
@@ -23,18 +21,16 @@ import com.amplifyframework.auth.cognito.result.GlobalSignOutError;
 import com.amplifyframework.auth.cognito.result.HostedUIError;
 import com.amplifyframework.auth.cognito.result.RevokeTokenError;
 import com.amplifyframework.core.Amplify;
-import com.example.miotav1.fragment.HomeFragment;
-import com.example.miotav1.fragment.LogoutFragment;
 import com.google.android.material.navigation.NavigationView;
 
 public class Home extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    private static final int FRAGMENT_HOME = 0;
-    private static final int FRAGMENT_GUIDE = 1;
-    private static final int FRAGMENT_ABOUT = 2;
-    private static final int FRAGMENT_LOGOUT = 3;
+    private static final int LAYOUT_HOME = 0;
+//    private static final int FRAGMENT_GUIDE = 1;
+//    private static final int FRAGMENT_ABOUT = 2;
+//    private static final int FRAGMENT_LOGOUT = 3;
 
-    private int mCurrentFragment = FRAGMENT_HOME;
+    private int mCurrentLayout = LAYOUT_HOME;
 
     private DrawerLayout mDrawerLayout;
 
@@ -55,8 +51,10 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         NavigationView navigationView = findViewById(R.id.navigation_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        replaceFragment(new HomeFragment());
-        navigationView.getMenu().findItem(R.id.nav_home).setChecked(true);
+        FrameLayout frameLayout = findViewById(R.id.content_frame);
+        frameLayout.removeAllViews();  // Xóa tất cả các views hiện tại trong FrameLayout
+        View inflatedView = getLayoutInflater().inflate(R.layout.activity_home_screen, frameLayout, true);
+
 //        ImageButton addDeviceButton = findViewById(R.id.add_device_button);
 //        addDeviceButton.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -180,20 +178,24 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         System.exit(1); // Exit the app
     }
 
-    private void replaceFragment(Fragment fragment) {
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.content_frame, fragment);
-        transaction.commit();
-    }
+//    private void replaceFragment(Fragment fragment) {
+//        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+//        transaction.replace(R.id.content_frame, fragment);
+//        transaction.commit();
+//    }
+
+//    private void replaceLayout(@LayoutRes int layoutResId) {
+//        setContentView(layoutResId);
+//    }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.nav_home) {
-            if (mCurrentFragment != FRAGMENT_HOME) {
-                replaceFragment(new HomeFragment());
-                mCurrentFragment = FRAGMENT_HOME;
-            }
+            if (id == R.id.nav_home) {
+                if (mCurrentLayout != LAYOUT_HOME) {
+                    setContentView(R.layout.activity_home_screen);
+                    mCurrentLayout = LAYOUT_HOME;
+                }
         } else if (id == R.id.nav_guide) {
 
         } else if (id == R.id.nav_about) {
@@ -204,7 +206,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
 //                mCurrentFragment = FRAGMENT_LOGOUT;
 //            }
             signOut();
-            finish();
+//            finish();
         }
         mDrawerLayout.closeDrawer(GravityCompat.START);
         return true;
