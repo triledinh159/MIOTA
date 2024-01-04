@@ -1,14 +1,21 @@
 package com.example.miotav1;
 
+import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.MenuItem;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.amplifyframework.auth.cognito.result.AWSCognitoAuthSignOutResult;
@@ -16,14 +23,26 @@ import com.amplifyframework.auth.cognito.result.GlobalSignOutError;
 import com.amplifyframework.auth.cognito.result.HostedUIError;
 import com.amplifyframework.auth.cognito.result.RevokeTokenError;
 import com.amplifyframework.core.Amplify;
+import com.example.miotav1.fragment.HomeFragment;
+import com.example.miotav1.fragment.LogoutFragment;
+import com.google.android.material.navigation.NavigationView;
 
-public class Home extends AppCompatActivity {
+public class Home extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+
+    private static final int FRAGMENT_HOME = 0;
+    private static final int FRAGMENT_GUIDE = 1;
+    private static final int FRAGMENT_ABOUT = 2;
+    private static final int FRAGMENT_LOGOUT = 3;
+
+    private int mCurrentFragment = FRAGMENT_HOME;
+
     private DrawerLayout mDrawerLayout;
+
     @Override
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home_screen);
+        setContentView(R.layout.activity_main);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -32,6 +51,12 @@ public class Home extends AppCompatActivity {
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.nav_drawer_open, R.string.nav_drawer_close);
         mDrawerLayout.addDrawerListener(toggle);
         toggle.syncState();
+
+        NavigationView navigationView = findViewById(R.id.navigation_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        replaceFragment(new HomeFragment());
+        navigationView.getMenu().findItem(R.id.nav_home).setChecked(true);
 //        ImageButton addDeviceButton = findViewById(R.id.add_device_button);
 //        addDeviceButton.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -118,6 +143,7 @@ public class Home extends AppCompatActivity {
             }
         });
     }
+
     // Method to navigate to the Login screen
     private void navigateToLogin() {
         Intent intent = new Intent(this, Login.class);
@@ -125,10 +151,14 @@ public class Home extends AppCompatActivity {
         startActivity(intent);
         finish(); // Close the current activity (Home)
     }
+
     private boolean doubleBackToExitPressedOnce = false;
 
     @Override
     public void onBackPressed() {
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerLayout.closeDrawer(GravityCompat.START);
+        }
         if (doubleBackToExitPressedOnce) {
             finishAndRestartApp(); // Modified: finish the activity and restart the app
             return;
@@ -150,4 +180,33 @@ public class Home extends AppCompatActivity {
         System.exit(1); // Exit the app
     }
 
+    private void replaceFragment(Fragment fragment) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.content_frame, fragment);
+        transaction.commit();
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.nav_home) {
+            if (mCurrentFragment != FRAGMENT_HOME) {
+                replaceFragment(new HomeFragment());
+                mCurrentFragment = FRAGMENT_HOME;
+            }
+        } else if (id == R.id.nav_guide) {
+
+        } else if (id == R.id.nav_about) {
+
+        } else if (id == R.id.nav_logout) {
+//            if (mCurrentFragment != FRAGMENT_LOGOUT) {
+//                replaceFragment(new LogoutFragment());
+//                mCurrentFragment = FRAGMENT_LOGOUT;
+//            }
+            signOut();
+            finish();
+        }
+        mDrawerLayout.closeDrawer(GravityCompat.START);
+        return false;
+    }
 }
