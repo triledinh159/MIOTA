@@ -2,7 +2,7 @@ package com.example.miotav1;
 
 import android.app.Application;
 import android.util.Log;
-
+import com.amplifyframework.storage.s3.AWSS3StoragePlugin;
 import com.amplifyframework.AmplifyException;
 import com.amplifyframework.api.aws.AWSApiPlugin;
 import com.amplifyframework.auth.cognito.AWSCognitoAuthPlugin;
@@ -17,11 +17,13 @@ public class MIOTAv1 extends Application {
             AmplifyModelProvider modelProvider = AmplifyModelProvider.getInstance();
             Amplify.addPlugin(new AWSDataStorePlugin(modelProvider));
             Amplify.addPlugin(new AWSApiPlugin());
+
             Amplify.addPlugin(new AWSCognitoAuthPlugin());
+            Amplify.addPlugin(new AWSS3StoragePlugin());
             Amplify.configure(getApplicationContext());
-            Log.i("amplify","configured");
-        } catch (AmplifyException e){
-            e.printStackTrace();
+            Log.i("mqtt-tri", "Initialized successfully");
+        } catch (AmplifyException e) {
+            Log.e("mqtt-tri", "Could not initialize Amplify", e);
         }
     }
 }

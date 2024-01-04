@@ -8,22 +8,7 @@
 
   <!-- Other UI elements -->
 
-  <Button
-      android:id="@+id/btnSignOut"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_alignParentTop="true"
-      android:layout_alignParentEnd="true"
-      android:layout_marginTop="16dp"
-      android:layout_marginEnd="16dp"
-      android:text="Sign Out" />
 
-  <Button
-      android:id="@+id/btnPublish"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_marginTop="16dp"
-      android:text="Publish" />
 
   <TextView
       android:id="@+id/tvReceivedMessage"
@@ -32,19 +17,6 @@
       android:layout_marginTop="60dp"
       android:text="Received Message will appear here" />
 
-  <com.github.mikephil.charting.charts.LineChart
-      android:id="@+id/chart"
-      android:layout_marginTop="160dp"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent" />
-
-  <Button
-      android:id="@+id/btnToggleChart"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_below="@+id/btnPublish"
-      android:layout_marginTop="16dp"
-      android:text="Toggle Chart Visibility" />
 
 
 </RelativeLayout>
