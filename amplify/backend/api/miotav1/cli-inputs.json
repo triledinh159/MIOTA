@@ -4,8 +4,8 @@
     "apiName": "miotav1",
     "serviceName": "AppSync",
     "defaultAuthType": {
-      "mode": "AMAZON_COGNITO_USER_POOLS",
-      "cognitoUserPoolId": "authmiotav13ef554dd"
+      "mode": "API_KEY",
+      "expirationTime": 7
     }
   }
 }

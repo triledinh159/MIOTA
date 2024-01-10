@@ -27,6 +27,8 @@
         <activity
             android:name=".Join"
             android:exported="false" />
+        <activity android:name=".AddDevice" />
+        <activity android:name=".Detail_device_click_on"/>
         <activity
             android:name=".Home"
             android:exported="false" />
