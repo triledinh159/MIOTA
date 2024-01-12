@@ -2,12 +2,15 @@ package com.example.miotav1;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.amplifyframework.core.Amplify;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -84,8 +87,19 @@ public class AddDevice extends AppCompatActivity {
             FileWriter writer = new FileWriter(file);
             writer.write(jsonData.toString());
             writer.close();
+            uploadFileToS3();
         } catch (JSONException | IOException e) {
             e.printStackTrace();
         }
+    }
+    private void uploadFileToS3() {
+        File file = new File(getFilesDir(), "user.json");
+
+        Amplify.Storage.uploadFile(
+                "user.json",
+                file,
+                result -> Log.i("MyAmplifyApp", "Successfully uploaded: " + result.getKey()),
+                error -> Log.e("MyAmplifyApp", "Upload failed", error)
+        );
     }
 }
