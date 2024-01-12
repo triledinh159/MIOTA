@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/item_device"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="10dp">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/img_box"
+                android:layout_width="296dp"
+                android:layout_height="114dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.208"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:srcCompat="@drawable/gradient_rectangle" />
+
+            <TextView
+                android:id="@+id/nameAtHome"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/inter_bold"
+                android:text="CAM BIEN ANH SANG"
+                android:textColor="@color/lightblue"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/button"
+                app:layout_constraintHorizontal_bias="0.141"
+                app:layout_constraintStart_toStartOf="@+id/img_box"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.18" />
+
+            <TextView
+                android:id="@+id/nameDevice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/inter_bold"
+                android:text="DHT11"
+                android:textColor="@color/lightblue"
+                app:layout_constraintBottom_toBottomOf="@+id/nameAtHome"
+                app:layout_constraintEnd_toEndOf="@+id/img_box"
+                app:layout_constraintStart_toEndOf="@+id/nameAtHome"
+                app:layout_constraintTop_toTopOf="@+id/nameAtHome" />
+
+            <ImageView
+                android:id="@+id/ImgHum"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/TempImg"
+                app:layout_constraintStart_toStartOf="@+id/TempImg"
+                app:layout_constraintTop_toBottomOf="@+id/TempImg"
+                app:srcCompat="@drawable/hum" />
+
+            <ImageView
+                android:id="@+id/TempImg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/nameAtHome"
+                app:layout_constraintHorizontal_bias="0.504"
+                app:layout_constraintStart_toStartOf="@+id/nameAtHome"
+                app:layout_constraintTop_toBottomOf="@+id/nameAtHome"
+                app:layout_constraintVertical_bias="0.177"
+                app:srcCompat="@drawable/temp" />
+
+            <ImageView
+                android:id="@+id/Img_connect"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/nameDevice"
+                app:layout_constraintStart_toStartOf="@+id/nameDevice"
+                app:layout_constraintTop_toBottomOf="@+id/nameDevice"
+                app:layout_constraintVertical_bias="0.301"
+                app:srcCompat="@drawable/wifi" />
+
+            <TextView
+                android:id="@+id/connected"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/inter_bold"
+                android:text="Connected"
+                android:textColor="@color/lightblue"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/Img_connect"
+                app:layout_constraintStart_toStartOf="@+id/Img_connect"
+                app:layout_constraintTop_toBottomOf="@+id/Img_connect" />
+
+            <Button
+                android:id="@+id/button"
+                android:layout_width="55dp"
+                android:layout_height="36dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/img_box"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/textView6"
+                android:layout_width="wrap_content"
+                android:layout_height="19dp"
+                android:text="Delete"
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="@+id/button"
+                app:layout_constraintEnd_toEndOf="@+id/button"
+                app:layout_constraintStart_toStartOf="@+id/button"
+                app:layout_constraintTop_toTopOf="@+id/button" />
+
+            <Switch
+                android:id="@+id/sw_control"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:padding="10dp"
+                android:theme="@style/mySwitch"
+                android:thumb="@drawable/thumb_selector"
+                android:track="@drawable/track_selector"
+                app:layout_constraintBottom_toBottomOf="@id/img_box"
+                app:layout_constraintEnd_toEndOf="@id/img_box"
+                app:layout_constraintHorizontal_bias="0.195"
+                app:layout_constraintStart_toStartOf="@id/img_box"
+                app:layout_constraintTop_toTopOf="@id/img_box"
+                app:layout_constraintVertical_bias="0.717" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+</LinearLayout>

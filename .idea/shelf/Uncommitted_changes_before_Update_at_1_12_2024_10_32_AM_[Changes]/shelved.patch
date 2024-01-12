@@ -1,0 +1,952 @@
+Index: app/src/main/java/com/example/miotav1/Home.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.miotav1;\r\n\r\nimport androidx.annotation.NonNull;\r\nimport androidx.appcompat.app.ActionBarDrawerToggle;\r\nimport androidx.appcompat.app.AppCompatActivity;\r\nimport androidx.appcompat.widget.Toolbar;\r\nimport androidx.drawerlayout.widget.DrawerLayout;\r\n\r\nimport android.content.Context;\r\nimport android.content.Intent;\r\nimport android.os.AsyncTask;\r\nimport android.os.Bundle;\r\nimport android.os.Handler;\r\nimport android.util.Log;\r\nimport android.view.MenuItem;\r\nimport android.view.View;\r\nimport android.widget.FrameLayout;\r\nimport android.widget.TextView;\r\nimport android.widget.Toast;\r\n\r\nimport com.amplifyframework.auth.cognito.result.AWSCognitoAuthSignOutResult;\r\nimport com.amplifyframework.auth.cognito.result.GlobalSignOutError;\r\nimport com.amplifyframework.auth.cognito.result.HostedUIError;\r\nimport com.amplifyframework.auth.cognito.result.RevokeTokenError;\r\nimport com.amplifyframework.core.Amplify;\r\n\r\n\r\nimport org.apache.commons.io.FileUtils;\r\nimport org.eclipse.paho.android.service.MqttAndroidClient;\r\nimport org.eclipse.paho.client.mqttv3.IMqttActionListener;\r\nimport org.eclipse.paho.client.mqttv3.IMqttToken;\r\n//import org.eclipse.paho.client.mqttv3.MqttClient;\r\nimport org.eclipse.paho.client.mqttv3.MqttCallback;\r\nimport org.eclipse.paho.client.mqttv3.MqttConnectOptions;\r\nimport org.eclipse.paho.client.mqttv3.MqttException;\r\nimport org.eclipse.paho.client.mqttv3.MqttMessage;\r\nimport org.json.JSONArray;\r\nimport org.json.JSONException;\r\nimport org.json.JSONObject;\r\n\r\nimport com.google.android.material.navigation.NavigationView;\r\nimport com.hivemq.client.mqtt.MqttClient;\r\nimport com.hivemq.client.mqtt.MqttGlobalPublishFilter;\r\nimport com.hivemq.client.mqtt.datatypes.MqttQos;\r\nimport com.hivemq.client.mqtt.mqtt5.Mqtt5BlockingClient;\r\nimport com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5Publish;\r\n\r\nimport static com.hivemq.client.mqtt.MqttGlobalPublishFilter.ALL;\r\nimport static java.nio.charset.StandardCharsets.UTF_8;\r\n\r\nimport java.io.File;\r\nimport java.io.IOException;\r\nimport java.nio.charset.StandardCharsets;\r\nimport java.util.ArrayList;\r\nimport java.util.List;\r\nimport java.util.Optional;\r\nimport java.util.concurrent.TimeUnit;\r\n\r\nclass MqttMessageReceiver extends AsyncTask<Void, String, Void> {\r\n\r\n    private Mqtt5BlockingClient mqttClient;\r\n    private TextView tvReceivedMessage;\r\n\r\n    MqttMessageReceiver(Mqtt5BlockingClient mqttClient, TextView tvReceivedMessage) {\r\n        this.mqttClient = mqttClient;\r\n        this.tvReceivedMessage = tvReceivedMessage;\r\n    }\r\n\r\n    @Override\r\n    protected Void doInBackground(Void... params) {\r\n        try (final Mqtt5BlockingClient.Mqtt5Publishes publishes = mqttClient.publishes(MqttGlobalPublishFilter.ALL)) {\r\n            while (true) {\r\n                Optional<Mqtt5Publish> message = publishes.receive(10, TimeUnit.SECONDS);\r\n\r\n                if (message.isPresent()) {\r\n                    String receivedMessage = new String(message.get().getPayloadAsBytes(), UTF_8);\r\n                    Log.d(\"mqtt-tri\", \"Received message: \" + receivedMessage);\r\n                    publishProgress(receivedMessage);\r\n                } else {\r\n                    Log.d(\"mqtt-tri\", \"No message received within the specified time.\");\r\n                }\r\n            }\r\n        } catch (Exception e) {\r\n            Log.e(\"mqtt-tri\", \"Error receiving message: \" + e.getMessage());\r\n        }\r\n        return null;\r\n    }\r\n\r\n    @Override\r\n    protected void onProgressUpdate(String... values) {\r\n        // Update UI on the main thread\r\n        tvReceivedMessage.setText(values[0]);\r\n    }\r\n}\r\n\r\npublic class Home extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {\r\n    private static final int LAYOUT_HOME = 0;\r\n    private String host, username, password, topic;\r\n    private Mqtt5BlockingClient mqttClient;\r\n    private TextView tvReceivedMessage;\r\n\r\n    private int mCurrentLayout = LAYOUT_HOME;\r\n\r\n    private DrawerLayout mDrawerLayout;\r\n    Context context;\r\n    @Override\r\n    protected void onCreate(Bundle savedInstanceState) {\r\n        super.onCreate(savedInstanceState);\r\n        setContentView(R.layout.activity_main);\r\n\r\n        Toolbar toolbar = findViewById(R.id.toolbar);\r\n        setSupportActionBar(toolbar);\r\n\r\n        mDrawerLayout = findViewById(R.id.drawerLayout);\r\n        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.nav_drawer_open, R.string.nav_drawer_close);\r\n        mDrawerLayout.addDrawerListener(toggle);\r\n        toggle.syncState();\r\n\r\n        NavigationView navigationView = findViewById(R.id.navigation_view);\r\n        navigationView.setNavigationItemSelectedListener(this);\r\n\r\n        FrameLayout frameLayout = findViewById(R.id.content_frame);\r\n        frameLayout.removeAllViews();  // Xóa tất cả các views hiện tại trong FrameLayout\r\n        View inflatedView = getLayoutInflater().inflate(R.layout.activity_home_screen, frameLayout, true);\r\n\r\n\r\n        tvReceivedMessage = findViewById(R.id.tvReceivedMessage);\r\n\r\n        try{\r\n            getInfo();\r\n        } catch (Exception e){\r\n            Log.e(\"mqtt-tri\", \"errrrrrrrrr\");\r\n        }\r\n    }\r\n\r\n    private void getInfo() throws InterruptedException {\r\n        try {\r\n\r\n            File exampleFile = new File(getApplicationContext().getFilesDir(), \"user.json\");\r\n            Amplify.Storage.downloadFile(\r\n                    \"user.json\",\r\n                    exampleFile,\r\n                    result -> {\r\n                        Log.i(\"MyAmplifyApp\", \"Successfully downloaded: \" + result.getFile().getName());\r\n                        try {\r\n                            String jsonString = FileUtils.readFileToString(result.getFile(), StandardCharsets.UTF_8);\r\n                            processConfig(jsonString);\r\n                            Log.d(\"mqtt-tri\", \"read\" + jsonString);\r\n                        } catch (IOException e) {\r\n                            throw new RuntimeException(e);\r\n                        }\r\n\r\n\r\n                    },\r\n                    error -> Log.e(\"MyAmplifyApp\",  \"Download Failure\", error)\r\n            );\r\n        } catch(Exception error) {\r\n            Log.e(\"MyAmplifyApp\", \"Download Failure\", error);\r\n        }\r\n    }\r\n    private void processConfig(String jsonString) {\r\n        try {\r\n            JSONObject configObject = new JSONObject(jsonString);\r\n            JSONArray devicesArray = configObject.getJSONArray(\"devices\");\r\n            List<String> topics = new ArrayList<>();\r\n\r\n            for (int i = 0; i < devicesArray.length(); i++) {\r\n                JSONObject deviceObject = devicesArray.getJSONObject(i);\r\n                String topic = deviceObject.getString(\"topic\");\r\n                topics.add(topic);\r\n                Log.d(\"mqtt-tri\", topic);\r\n            }\r\n\r\n            subscribeToTopics(topics);\r\n\r\n        } catch (JSONException e) {\r\n            Log.e(\"mqtt-tri\", \"Error parsing JSON: \" + e.getMessage());\r\n        }\r\n    }\r\n    private void subscribeToTopics(List<String> topics) {\r\n        host = \"d567f3932ca749f78c9e75dac4e4eab5.s2.eu.hivemq.cloud\";\r\n        username = \"trild\";\r\n        password = \"Tri123456\";\r\n        try {\r\n            // create an MQTT client\r\n            mqttClient = MqttClient.builder()\r\n                    .useMqttVersion5()\r\n                    .serverHost(host)\r\n                    .serverPort(8883)\r\n                    .sslWithDefaultConfig()\r\n                    .buildBlocking();\r\n\r\n            // connect to HiveMQ Cloud with TLS and username/pw\r\n            mqttClient.connectWith()\r\n                    .simpleAuth()\r\n                    .username(username)\r\n                    .password(UTF_8.encode(password))\r\n                    .applySimpleAuth()\r\n                    .send();\r\n\r\n            Log.d(\"mqtt-tri\", \"Connected successfully\");\r\n\r\n            // Subscribe to all topics\r\n            for (String topic : topics) {\r\n                mqttClient.subscribeWith()\r\n                        .topicFilter(topic)\r\n                        .send();\r\n                Log.d(\"mqtt-tri\", \"Subscribed to topic: \" + topic);\r\n            }\r\n\r\n            // Receive messages for all subscribed topics\r\n            try {\r\n                // Create an instance of MqttMessageReceiver and execute it\r\n                MqttMessageReceiver mqttMessageReceiver = new MqttMessageReceiver(mqttClient, tvReceivedMessage);\r\n                mqttMessageReceiver.execute();\r\n\r\n                // The rest of your existing code...\r\n            } catch (Exception e) {\r\n                Log.e(\"mqtt-tri\", \"er=\");\r\n            }\r\n\r\n        } catch (Exception e) {\r\n            Log.e(\"mqtt-tri\", \"Error connecting to MQTT broker: \" + e.getMessage());\r\n        }\r\n    }\r\n    // Method to handle Signout\r\n    private void signOut() {\r\n        Amplify.Auth.signOut(signOutResult -> {\r\n            if (signOutResult instanceof AWSCognitoAuthSignOutResult.CompleteSignOut) {\r\n                // Sign Out completed fully and without errors.\r\n                Log.i(\"AuthQuickStart\", \"Signed out successfully\");\r\n                //Back To Login screen\r\n                navigateToLogin();\r\n            } else if (signOutResult instanceof AWSCognitoAuthSignOutResult.PartialSignOut) {\r\n                // Sign Out completed with some errors. User is signed out of the device.\r\n                AWSCognitoAuthSignOutResult.PartialSignOut partialSignOutResult =\r\n                        (AWSCognitoAuthSignOutResult.PartialSignOut) signOutResult;\r\n\r\n                HostedUIError hostedUIError = partialSignOutResult.getHostedUIError();\r\n                if (hostedUIError != null) {\r\n                    Log.e(\"AuthQuickStart\", \"HostedUI Error\", hostedUIError.getException());\r\n                    // Optional: Re-launch hostedUIError.getUrl() in a Custom tab to clear Cognito web session.\r\n                }\r\n\r\n                GlobalSignOutError globalSignOutError = partialSignOutResult.getGlobalSignOutError();\r\n                if (globalSignOutError != null) {\r\n                    Log.e(\"AuthQuickStart\", \"GlobalSignOut Error\", globalSignOutError.getException());\r\n                    // Optional: Use escape hatch to retry revocation of globalSignOutError.getAccessToken().\r\n                }\r\n\r\n                RevokeTokenError revokeTokenError = partialSignOutResult.getRevokeTokenError();\r\n                if (revokeTokenError != null) {\r\n                    Log.e(\"AuthQuickStart\", \"RevokeToken Error\", revokeTokenError.getException());\r\n                    // Optional: Use escape hatch to retry revocation of revokeTokenError.getRefreshToken().\r\n                }\r\n            } else if (signOutResult instanceof AWSCognitoAuthSignOutResult.FailedSignOut) {\r\n                AWSCognitoAuthSignOutResult.FailedSignOut failedSignOutResult =\r\n                        (AWSCognitoAuthSignOutResult.FailedSignOut) signOutResult;\r\n                // Sign Out failed with an exception, leaving the user signed in.\r\n                Log.e(\"AuthQuickStart\", \"Sign out Failed\", failedSignOutResult.getException());\r\n            }\r\n        });\r\n    }\r\n    // Method to navigate to the Login screen\r\n    private void navigateToLogin() {\r\n        Intent intent = new Intent(this, Login.class);\r\n        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK); // Clear the back stack\r\n        startActivity(intent);\r\n        finish(); // Close the current activity (Home)\r\n    }\r\n    private boolean doubleBackToExitPressedOnce = false;\r\n\r\n    @Override\r\n    public void onBackPressed() {\r\n        if (doubleBackToExitPressedOnce) {\r\n            finishAndRestartApp(); // Modified: finish the activity and restart the app\r\n            return;\r\n        }\r\n\r\n        this.doubleBackToExitPressedOnce = true;\r\n        Toast.makeText(this, \"Press again to exit\", Toast.LENGTH_SHORT).show();\r\n\r\n        new Handler().postDelayed(() -> doubleBackToExitPressedOnce = false, 2000);\r\n    }\r\n\r\n    private void finishAndRestartApp() {\r\n        finish(); // Finish the current activity\r\n        Intent intent = new Intent(this, MainActivity.class);\r\n        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);\r\n        startActivity(intent); // Restart the app by starting MainActivity\r\n        moveTaskToBack(true); // Move the task to the back of the stack\r\n        android.os.Process.killProcess(android.os.Process.myPid()); // Kill the process\r\n        System.exit(1); // Exit the app\r\n    }\r\n    protected void onDestroy() {\r\n        super.onDestroy();\r\n        // Disconnect the MQTT client when the activity is destroyed\r\n        if (mqttClient != null && mqttClient.getState().isConnected()) {\r\n            mqttClient.disconnect();\r\n        }\r\n    }\r\n\r\n    @Override\r\n    public boolean onNavigationItemSelected(@NonNull MenuItem item) {\r\n        return false;\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/miotav1/Home.java b/app/src/main/java/com/example/miotav1/Home.java
+--- a/app/src/main/java/com/example/miotav1/Home.java	(revision cd8ac8ca133260d5801852a010c6ae2b3d5dbd6a)
++++ b/app/src/main/java/com/example/miotav1/Home.java	(date 1704401725940)
+@@ -5,6 +5,8 @@
+ import androidx.appcompat.app.AppCompatActivity;
+ import androidx.appcompat.widget.Toolbar;
+ import androidx.drawerlayout.widget.DrawerLayout;
++import androidx.recyclerview.widget.LinearLayoutManager;
++import androidx.recyclerview.widget.RecyclerView;
+ 
+ import android.content.Context;
+ import android.content.Intent;
+@@ -15,6 +17,8 @@
+ import android.view.MenuItem;
+ import android.view.View;
+ import android.widget.FrameLayout;
++import android.widget.ImageButton;
++import android.widget.ImageView;
+ import android.widget.TextView;
+ import android.widget.Toast;
+ 
+@@ -89,7 +93,7 @@
+     @Override
+     protected void onProgressUpdate(String... values) {
+         // Update UI on the main thread
+-        tvReceivedMessage.setText(values[0]);
++        //tvReceivedMessage.setText(values[0]);
+     }
+ }
+ 
+@@ -100,32 +104,57 @@
+     private TextView tvReceivedMessage;
+ 
+     private int mCurrentLayout = LAYOUT_HOME;
++    private ArrayList<Device> deviceList;
++    private DeviceAdapter deviceAdapter;
++    ImageView ImgBg;
+ 
++    TextView home_title,iot_title;
++    RecyclerView rcv_listDevice;
++    ImageButton btnAdd;
++
++    private static final int REQUEST_CODE_ADD_ITEM = 1;
+     private DrawerLayout mDrawerLayout;
+     Context context;
+     @Override
+     protected void onCreate(Bundle savedInstanceState) {
+         super.onCreate(savedInstanceState);
+-        setContentView(R.layout.activity_main);
+-
+-        Toolbar toolbar = findViewById(R.id.toolbar);
+-        setSupportActionBar(toolbar);
++//        setContentView(R.layout.activity_main);
++//
++//        Toolbar toolbar = findViewById(R.id.toolbar);
++//        setSupportActionBar(toolbar);
++//
++//        mDrawerLayout = findViewById(R.id.drawerLayout);
++//        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.nav_drawer_open, R.string.nav_drawer_close);
++//        mDrawerLayout.addDrawerListener(toggle);
++//        toggle.syncState();
++//
++//        NavigationView navigationView = findViewById(R.id.navigation_view);
++//        navigationView.setNavigationItemSelectedListener(this);
++//
++//        FrameLayout frameLayout = findViewById(R.id.content_frame);
++//        frameLayout.removeAllViews();  // Xóa tất cả các views hiện tại trong FrameLayout
++//        View inflatedView = getLayoutInflater().inflate(R.layout.activity_home_screen, frameLayout, true);
+ 
+-        mDrawerLayout = findViewById(R.id.drawerLayout);
+-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.nav_drawer_open, R.string.nav_drawer_close);
+-        mDrawerLayout.addDrawerListener(toggle);
+-        toggle.syncState();
+ 
+-        NavigationView navigationView = findViewById(R.id.navigation_view);
+-        navigationView.setNavigationItemSelectedListener(this);
++//        tvReceivedMessage = findViewById(R.id.tvReceivedMessage);
+ 
+-        FrameLayout frameLayout = findViewById(R.id.content_frame);
+-        frameLayout.removeAllViews();  // Xóa tất cả các views hiện tại trong FrameLayout
+-        View inflatedView = getLayoutInflater().inflate(R.layout.activity_home_screen, frameLayout, true);
++        setContentView(R.layout.activity_home_screen);
++        deviceList = new ArrayList<>();
++        deviceAdapter = new DeviceAdapter(this, deviceList);
++        ImgBg = (ImageView) findViewById(R.id.bgimage);
++        rcv_listDevice = (RecyclerView) findViewById(R.id.recycleList);
++        rcv_listDevice.setLayoutManager(new LinearLayoutManager(this));
++        rcv_listDevice.setAdapter(deviceAdapter);
++        btnAdd = (ImageButton) findViewById(R.id.addButton);
++        btnAdd.setOnClickListener(new View.OnClickListener() {
++            @Override
++            public void onClick(View v) {
++                Intent intent = new Intent(Home.this, AddDevice.class);
++                startActivityForResult(intent, REQUEST_CODE_ADD_ITEM);
++            }
+ 
+ 
+-        tvReceivedMessage = findViewById(R.id.tvReceivedMessage);
+-
++        });
+         try{
+             getInfo();
+         } catch (Exception e){
+Index: app/src/main/java/com/example/miotav1/Detail_device_click_on.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/miotav1/Detail_device_click_on.java b/app/src/main/java/com/example/miotav1/Detail_device_click_on.java
+new file mode 100644
+--- /dev/null	(date 1704401453726)
++++ b/app/src/main/java/com/example/miotav1/Detail_device_click_on.java	(date 1704401453726)
+@@ -0,0 +1,17 @@
++package com.example.miotav1;
++
++import android.os.Bundle;
++import android.widget.TextView;
++
++import androidx.appcompat.app.AppCompatActivity;
++
++public class Detail_device_click_on extends AppCompatActivity{
++    @Override
++    protected void onCreate(Bundle savedInstanceState) {
++        super.onCreate(savedInstanceState);
++        setContentView(R.layout.activity_detail);
++
++        TextView textHelloWorld = findViewById(R.id.textHelloWorld);
++        // You can perform additional actions if needed.
++    }
++}
+Index: app/src/main/java/com/example/miotav1/DeviceAdapter.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/miotav1/DeviceAdapter.java b/app/src/main/java/com/example/miotav1/DeviceAdapter.java
+new file mode 100644
+--- /dev/null	(date 1704395724000)
++++ b/app/src/main/java/com/example/miotav1/DeviceAdapter.java	(date 1704395724000)
+@@ -0,0 +1,129 @@
++package com.example.miotav1;
++
++import android.content.Context;
++import android.content.Intent;
++import android.text.TextUtils;
++import android.view.LayoutInflater;
++import android.view.View;
++import android.view.ViewGroup;
++import android.widget.Button;
++import android.widget.ImageView;
++import android.widget.LinearLayout;
++import android.widget.Switch;
++import android.widget.TextView;
++
++import androidx.annotation.NonNull;
++import androidx.recyclerview.widget.RecyclerView;
++
++import java.util.List;
++
++public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.DeviceHolder> {
++    private Context context;
++    private List<Device> mListDevice;
++
++    public DeviceAdapter(Context context, List<Device> mListDevice) {
++        this.context = context;
++        this.mListDevice = mListDevice;
++    }
++
++    public List<Device> getmListDevice() {
++        return mListDevice;
++    }
++
++    public void setmListDevice(List<Device> mListDevice) {
++        this.mListDevice = mListDevice;
++    }
++
++    class DeviceHolder extends RecyclerView.ViewHolder {
++        TextView tvName, tvDevice;
++        ImageView Imgbx, Imgconnect, ImgTemp, ImgHum;
++        Switch swControl;
++
++        Button btnDelete;
++        LinearLayout llparent;
++
++        public DeviceHolder(@NonNull View itemView) {
++            super(itemView);
++            tvName = itemView.findViewById(R.id.nameAtHome);
++            tvDevice = itemView.findViewById(R.id.nameDevice);
++            Imgbx = itemView.findViewById(R.id.img_box);
++            Imgconnect = itemView.findViewById(R.id.Img_connect);
++            ImgHum = itemView.findViewById(R.id.ImgHum);
++            ImgTemp = itemView.findViewById(R.id.TempImg);
++            swControl = itemView.findViewById(R.id.sw_control);
++            llparent = itemView.findViewById(R.id.item_device);
++            btnDelete = itemView.findViewById(R.id.button);
++
++            btnDelete.setOnClickListener(new View.OnClickListener() {
++                @Override
++                public void onClick(View v) {
++                    // Get the position of the clicked item
++                    int position = getAdapterPosition();
++                    // Check if the position is valid
++                    if (position != RecyclerView.NO_POSITION) {
++                        // Remove the item from the list
++                        mListDevice.remove(position);
++                        // Notify the adapter that the item is removed
++                        notifyItemRemoved(position);
++                    }
++                }
++            });
++        }
++    }
++
++    @NonNull
++    @Override
++    public DeviceHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
++        View view = LayoutInflater.from(context).inflate(R.layout.recycler_view, parent, false);
++        DeviceHolder holder = new DeviceHolder(view);
++
++        holder.btnDelete.setOnClickListener(new View.OnClickListener() {
++            @Override
++            public void onClick(View v) {
++                int position = holder.getAdapterPosition();
++                if (position != RecyclerView.NO_POSITION) {
++                    mListDevice.remove(position);
++                    notifyItemRemoved(position);
++                }
++            }
++        });
++
++        holder.itemView.setOnClickListener(new View.OnClickListener() {
++            @Override
++            public void onClick(View view) {
++                int position = holder.getAdapterPosition();
++                if (position != RecyclerView.NO_POSITION) {
++                    Device clickedDevice = mListDevice.get(position);
++                    Intent intent = new Intent(context, Detail_device_click_on.class);
++                    // Pass data if needed
++                    // intent.putExtra("device_id", clickedDevice.getID());
++                    context.startActivity(intent);
++                }
++            }
++        });
++
++        return holder;
++    }
++    @Override
++    public void onBindViewHolder(@NonNull DeviceHolder holder, int position) {
++        Device device = mListDevice.get(position);
++
++        // Make sure to check for null before accessing properties
++        if (device != null) {
++            holder.tvName.setText(TextUtils.isEmpty(device.getName()) ? "" : device.getName());
++            holder.tvDevice.setText(TextUtils.isEmpty(device.getDevice()) ? "" : device.getDevice());
++
++            // Check data or control device data -> 1, control -> 0
++            holder.ImgTemp.setVisibility(device.TypeDevice() == 1 ? View.GONE : View.VISIBLE);
++            holder.ImgHum.setVisibility(device.TypeDevice() == 1 ? View.GONE : View.VISIBLE);
++            holder.swControl.setVisibility(device.TypeDevice() == 1 ? View.VISIBLE : View.GONE);
++        }
++        holder.btnDelete.setTag(position);
++    }
++
++    @Override
++    public int getItemCount() {
++        return mListDevice.size();
++    }
++}
++
+Index: app/src/main/java/com/example/miotav1/AddDevice.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/miotav1/AddDevice.java b/app/src/main/java/com/example/miotav1/AddDevice.java
+new file mode 100644
+--- /dev/null	(date 1704395724000)
++++ b/app/src/main/java/com/example/miotav1/AddDevice.java	(date 1704395724000)
+@@ -0,0 +1,43 @@
++package com.example.miotav1;
++
++import android.content.Intent;
++import android.os.Bundle;
++import android.view.View;
++import android.widget.Button;
++import android.widget.CheckBox;
++import android.widget.EditText;
++
++import androidx.appcompat.app.AppCompatActivity;
++
++public class AddDevice extends AppCompatActivity {
++    @Override
++    protected void onCreate(Bundle savedInstanceState){
++        super.onCreate(savedInstanceState);
++        setContentView(R.layout.activity_add_device);
++        final CheckBox getTypedata = findViewById(R.id.data);
++        final CheckBox getTypecontrol = findViewById(R.id.control);
++        final EditText getDevice= findViewById(R.id.getDevice);
++        final EditText getTopic = findViewById(R.id.getTopic);
++        final EditText getName = findViewById(R.id.getName);
++        Button btnConfirm = findViewById(R.id.btnconfirm);
++        btnConfirm.setOnClickListener(new View.OnClickListener() {
++            @Override
++            public void onClick(View v) {
++                int typeDevice = 0;
++                if (getTypecontrol.isChecked()) {typeDevice = 1;}
++                if(getTypedata.isChecked()) {typeDevice = 0;}
++                String device = getDevice.getText().toString();
++                String topic = getTopic.getText().toString();
++                String name = getName.getText().toString();
++                Device newDevice = new Device(typeDevice,device, topic, name);
++                //Trả về newDevice thông qua Intent
++                Intent resultIntent = new Intent();
++                resultIntent.putExtra("new_Device", newDevice);
++                setResult(RESULT_OK, resultIntent);
++
++                //Kết thúc hoạt động
++                finish();
++            }
++        });
++    }
++}
+Index: app/src/main/java/com/example/miotav1/Device.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/miotav1/Device.java b/app/src/main/java/com/example/miotav1/Device.java
+new file mode 100644
+--- /dev/null	(date 1704395724000)
++++ b/app/src/main/java/com/example/miotav1/Device.java	(date 1704395724000)
+@@ -0,0 +1,38 @@
++//
++// Hàm Device để tạo kiểu dữ liệu Device để lấy các thông số từ add_item và đưa qua RecyclerView
++//
++package com.example.miotav1;
++
++import java.io.Serializable;
++
++public class Device implements Serializable {
++    private int id;
++    private String device, topic, name;
++    int type;
++
++    public Device(){}
++    public Device( int type, String device, String topic, String name){
++        this.type = type;
++        this.device = device;
++        this.topic = topic;
++        this.name = name;
++    }
++    public int getID(){
++        return id;
++    }
++
++    public String getDevice() {
++        return device;
++    }
++    public String getName(){
++        return name;
++    }
++
++    public String getTopic(){
++        return topic;
++    }
++    public void setType(int typeDevice){
++        type = typeDevice;
++    }
++    public int TypeDevice() {return type;}
++}
+Index: app/src/main/res/layout/layout_header_nav.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/layout/layout_header_nav.xml b/app/src/main/res/layout/layout_header_nav.xml
+new file mode 100644
+--- /dev/null	(date 1704395724000)
++++ b/app/src/main/res/layout/layout_header_nav.xml	(date 1704395724000)
+@@ -0,0 +1,31 @@
++<?xml version="1.0" encoding="utf-8"?>
++<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
++    android:layout_width="match_parent"
++    android:layout_height="180dp"
++    android:background="#FF6200EE"
++    android:padding="20dp"
++    android:gravity="bottom"
++    android:orientation="vertical">
++
++    <ImageView
++        android:layout_width="80dp"
++        android:layout_height="80dp"
++        android:src="@drawable/ic_launcher_background" />
++
++    <TextView
++        android:layout_width="wrap_content"
++        android:layout_height="wrap_content"
++        android:text="Triledinh159"
++        android:textSize="18dp"
++        android:textColor="@color/white"
++        android:layout_marginTop="8dp"
++        />
++
++    <TextView
++        android:layout_width="wrap_content"
++        android:layout_height="wrap_content"
++        android:text="triledinh159@gmail.com"
++        android:textSize="24dp"
++        android:textColor="@color/white" />
++
++</LinearLayout>
+\ No newline at end of file
+Index: app/src/main/res/layout/activity_home_screen.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/layout/activity_home_screen.xml b/app/src/main/res/layout/activity_home_screen.xml
+new file mode 100644
+--- /dev/null	(date 1704395724000)
++++ b/app/src/main/res/layout/activity_home_screen.xml	(date 1704395724000)
+@@ -0,0 +1,102 @@
++<?xml version="1.0" encoding="utf-8"?>
++<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
++    xmlns:app="http://schemas.android.com/apk/res-auto"
++    xmlns:tools="http://schemas.android.com/tools"
++    android:layout_width="match_parent"
++    android:layout_height="match_parent"
++    >
++
++    <ImageView
++        android:id="@+id/bgimage"
++        android:layout_width="336dp"
++        android:layout_height="500dp"
++        app:layout_constraintBottom_toBottomOf="parent"
++        app:layout_constraintEnd_toEndOf="parent"
++        app:layout_constraintStart_toStartOf="parent"
++        app:layout_constraintTop_toTopOf="parent"
++        tools:srcCompat="@drawable/background_01_2" />
++
++    <TextView
++        android:id="@+id/home"
++        android:layout_width="wrap_content"
++        android:layout_height="wrap_content"
++        android:fontFamily="@font/inter_bold"
++        android:gravity="center_horizontal|top"
++        android:lineSpacingExtra="9sp"
++        android:text="HOME"
++        android:textColor="@color/bluefont"
++        android:textSize="24sp"
++        android:translationY="-4.68sp"
++        app:layout_constraintBottom_toBottomOf="parent"
++        app:layout_constraintEnd_toEndOf="parent"
++        app:layout_constraintHorizontal_bias="0.498"
++        app:layout_constraintStart_toStartOf="parent"
++        app:layout_constraintTop_toTopOf="parent"
++        app:layout_constraintVertical_bias="0.048" />
++
++    <TextView
++        android:id="@+id/iot_device"
++        android:layout_width="wrap_content"
++        android:layout_height="wrap_content"
++        android:fontFamily="@font/inter_bold"
++        android:gravity="top"
++        android:lineSpacingExtra="12sp"
++        android:text="IOT DEVICE"
++        android:textColor="#6078F8"
++        android:textSize="20sp"
++        android:translationY="-6.24sp"
++        app:layout_constraintBottom_toBottomOf="parent"
++        app:layout_constraintEnd_toEndOf="parent"
++        app:layout_constraintHorizontal_bias="0.127"
++        app:layout_constraintStart_toStartOf="parent"
++        app:layout_constraintTop_toTopOf="parent"
++        app:layout_constraintVertical_bias="0.112"
++        tools:ignore="MissingConstraints" />
++
++    <FrameLayout
++        android:id="@+id/frameLayout2"
++        android:layout_width="match_parent"
++        android:layout_height="match_parent">
++
++        <androidx.constraintlayout.widget.ConstraintLayout
++            android:layout_width="match_parent"
++            android:layout_height="match_parent">
++
++            <androidx.recyclerview.widget.RecyclerView
++                android:id="@+id/recycleList"
++                android:layout_width="342dp"
++                android:layout_height="433dp"
++                app:layout_constraintBottom_toBottomOf="parent"
++                app:layout_constraintEnd_toEndOf="parent"
++                app:layout_constraintStart_toStartOf="parent"
++                app:layout_constraintTop_toTopOf="parent" />
++
++            <ImageButton
++                android:id="@+id/addButton"
++                android:layout_width="wrap_content"
++                android:layout_height="wrap_content"
++                android:background="@drawable/no_shadow_background"
++                android:src="@android:drawable/btn_star"
++                app:layout_constraintBottom_toBottomOf="parent"
++                app:layout_constraintEnd_toEndOf="parent"
++                app:layout_constraintHorizontal_bias="0.898"
++                app:layout_constraintStart_toStartOf="parent"
++                app:layout_constraintTop_toBottomOf="@+id/recycleList"
++                app:layout_constraintVertical_bias="0.281"
++                tools:srcCompat="@drawable/plus_square_filled" />
++
++            <ImageView
++                android:id="@+id/miotalogo"
++                android:layout_width="78dp"
++                android:layout_height="60dp"
++                app:layout_constraintBottom_toBottomOf="parent"
++                app:layout_constraintEnd_toEndOf="parent"
++                app:layout_constraintHorizontal_bias="0.498"
++                app:layout_constraintStart_toStartOf="parent"
++                app:layout_constraintTop_toBottomOf="@+id/recycleList"
++                app:layout_constraintVertical_bias="0.818"
++                app:srcCompat="@drawable/logo" />
++        </androidx.constraintlayout.widget.ConstraintLayout>
++    </FrameLayout>
++
++</androidx.constraintlayout.widget.ConstraintLayout>
+Index: app/src/main/res/layout/activity_add_device.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/layout/activity_add_device.xml b/app/src/main/res/layout/activity_add_device.xml
+new file mode 100644
+--- /dev/null	(date 1704395724000)
++++ b/app/src/main/res/layout/activity_add_device.xml	(date 1704395724000)
+@@ -0,0 +1,233 @@
++<?xml version="1.0" encoding="utf-8"?>
++<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
++    xmlns:app="http://schemas.android.com/apk/res-auto"
++    xmlns:tools="http://schemas.android.com/tools"
++    android:layout_width="match_parent"
++    android:layout_height="match_parent">
++
++    <androidx.constraintlayout.widget.ConstraintLayout
++        android:layout_width="match_parent"
++        android:layout_height="match_parent"
++        tools:context=".MainActivity">
++
++        <ImageView
++            android:id="@+id/bg"
++            android:layout_width="383dp"
++            android:layout_height="565dp"
++            app:layout_constraintBottom_toBottomOf="parent"
++            app:layout_constraintEnd_toEndOf="parent"
++            app:layout_constraintStart_toStartOf="parent"
++            app:layout_constraintTop_toTopOf="parent"
++            app:srcCompat="@drawable/background_01_2" />
++
++        <FrameLayout
++            android:id="@+id/frameLayout"
++            android:layout_width="match_parent"
++            android:layout_height="match_parent">
++
++            <androidx.constraintlayout.widget.ConstraintLayout
++                android:layout_width="match_parent"
++                android:layout_height="match_parent">
++
++                <TextView
++                    android:id="@+id/addDevice"
++                    android:layout_width="wrap_content"
++                    android:layout_height="38dp"
++                    android:fontFamily="@font/inter_bold"
++                    android:gravity="center_horizontal|top"
++                    android:lineSpacingExtra="9sp"
++                    android:text="ADD DEVICE"
++                    android:textColor="@color/bluefont"
++                    android:textSize="24sp"
++                    android:translationY="-4.68sp"
++                    app:layout_constraintBottom_toBottomOf="parent"
++                    app:layout_constraintEnd_toEndOf="parent"
++                    app:layout_constraintHorizontal_bias="0.498"
++                    app:layout_constraintStart_toStartOf="parent"
++                    app:layout_constraintTop_toTopOf="parent"
++                    app:layout_constraintVertical_bias="0.023" />
++
++                <Button
++                    android:id="@+id/btnconfirm"
++                    android:layout_width="wrap_content"
++                    android:layout_height="wrap_content"
++                    android:layout_marginBottom="164dp"
++                    android:text="Confirm"
++                    app:layout_constraintBottom_toBottomOf="parent"
++                    app:layout_constraintEnd_toEndOf="parent"
++                    app:layout_constraintHorizontal_bias="0.897"
++                    app:layout_constraintStart_toStartOf="parent"
++                    app:layout_constraintTop_toBottomOf="@+id/home"
++                    app:layout_constraintVertical_bias="0.722" />
++
++                <androidx.constraintlayout.widget.ConstraintLayout
++                    android:layout_width="match_parent"
++                    android:layout_height="match_parent"
++                    tools:layout_editor_absoluteX="0dp"
++                    tools:layout_editor_absoluteY="0dp">
++
++                    <androidx.cardview.widget.CardView
++                        android:id="@+id/cardView"
++                        android:layout_width="377dp"
++                        android:layout_height="267dp"
++                        app:layout_constraintBottom_toBottomOf="parent"
++                        app:layout_constraintEnd_toEndOf="parent"
++                        app:layout_constraintStart_toStartOf="parent"
++                        app:layout_constraintTop_toTopOf="parent">
++
++                        <ImageView
++                            android:id="@+id/imageView4"
++                            android:layout_width="378dp"
++                            android:layout_height="match_parent"
++                            tools:srcCompat="@drawable/gradient_rectangle" />
++
++                        <androidx.constraintlayout.widget.ConstraintLayout
++                            android:layout_width="match_parent"
++                            android:layout_height="match_parent">
++
++                            <TextView
++                                android:id="@+id/name"
++                                android:layout_width="wrap_content"
++                                android:layout_height="wrap_content"
++                                android:fontFamily="@font/inter_bold"
++                                android:text="Name :"
++                                android:textColor="@color/white"
++                                android:textSize="20sp"
++                                app:layout_constraintBottom_toBottomOf="parent"
++                                app:layout_constraintEnd_toEndOf="@+id/topic"
++                                app:layout_constraintStart_toStartOf="@+id/topic"
++                                app:layout_constraintTop_toBottomOf="@+id/topic" />
++
++                            <TextView
++                                android:id="@+id/Device"
++                                android:layout_width="wrap_content"
++                                android:layout_height="wrap_content"
++                                android:fontFamily="@font/inter_bold"
++                                android:text="Device :"
++                                android:textColor="@color/white"
++                                android:textSize="20sp"
++                                app:layout_constraintBottom_toBottomOf="parent"
++                                app:layout_constraintEnd_toEndOf="@+id/typeDevice"
++                                app:layout_constraintHorizontal_bias="0.033"
++                                app:layout_constraintStart_toStartOf="@+id/typeDevice"
++                                app:layout_constraintTop_toBottomOf="@+id/typeDevice"
++                                app:layout_constraintVertical_bias="0.134" />
++
++                            <TextView
++                                android:id="@+id/typeDevice"
++                                android:layout_width="wrap_content"
++                                android:layout_height="wrap_content"
++                                android:fontFamily="@font/inter_bold"
++                                android:text="Type"
++                                android:textColor="@color/white"
++                                android:textSize="20sp"
++                                app:layout_constraintBottom_toBottomOf="parent"
++                                app:layout_constraintEnd_toEndOf="parent"
++                                app:layout_constraintHorizontal_bias="0.112"
++                                app:layout_constraintStart_toStartOf="parent"
++                                app:layout_constraintTop_toTopOf="parent"
++                                app:layout_constraintVertical_bias="0.067" />
++
++                            <TextView
++                                android:id="@+id/topic"
++                                android:layout_width="wrap_content"
++                                android:layout_height="wrap_content"
++                                android:fontFamily="@font/inter_bold"
++                                android:text="Topic :"
++                                android:textColor="@color/white"
++                                android:textSize="20sp"
++                                app:layout_constraintBottom_toBottomOf="parent"
++                                app:layout_constraintEnd_toEndOf="@+id/Device"
++                                app:layout_constraintHorizontal_bias="0.0"
++                                app:layout_constraintStart_toStartOf="@+id/Device"
++                                app:layout_constraintTop_toBottomOf="@+id/Device"
++                                app:layout_constraintVertical_bias="0.24" />
++
++                            <EditText
++                                android:id="@+id/getDevice"
++                                android:layout_width="wrap_content"
++                                android:layout_height="wrap_content"
++                                android:backgroundTint="@color/white"
++                                android:ems="10"
++                                android:inputType="text"
++                                app:layout_constraintBottom_toBottomOf="@+id/Device"
++                                app:layout_constraintEnd_toEndOf="parent"
++                                app:layout_constraintStart_toEndOf="@+id/Device"
++                                app:layout_constraintTop_toTopOf="@+id/Device" />
++
++                            <EditText
++                                android:id="@+id/getTopic"
++                                android:layout_width="wrap_content"
++                                android:layout_height="wrap_content"
++                                android:backgroundTint="@color/white"
++                                android:ems="10"
++                                android:inputType="text"
++                                app:layout_constraintBottom_toBottomOf="@+id/topic"
++                                app:layout_constraintEnd_toEndOf="@+id/getDevice"
++                                app:layout_constraintStart_toStartOf="@+id/getDevice"
++                                app:layout_constraintTop_toTopOf="@+id/topic" />
++
++                            <EditText
++                                android:id="@+id/getName"
++                                android:layout_width="wrap_content"
++                                android:layout_height="wrap_content"
++                                android:backgroundTint="@color/white"
++                                android:ems="10"
++                                android:inputType="text"
++                                app:layout_constraintBottom_toBottomOf="@+id/name"
++                                app:layout_constraintEnd_toEndOf="@+id/getTopic"
++                                app:layout_constraintStart_toStartOf="@+id/getTopic"
++                                app:layout_constraintTop_toTopOf="@+id/name" />
++
++                            <CheckBox
++                                android:id="@+id/control"
++                                android:layout_width="wrap_content"
++                                android:layout_height="wrap_content"
++                                android:text="Control"
++                                android:textColor="@color/lightblue"
++                                app:layout_constraintBottom_toBottomOf="@+id/typeDevice"
++                                app:layout_constraintEnd_toEndOf="@+id/getDevice"
++                                app:layout_constraintHorizontal_bias="0.0"
++                                app:layout_constraintStart_toStartOf="@+id/getDevice"
++                                app:layout_constraintTop_toTopOf="@+id/typeDevice"
++                                app:layout_constraintVertical_bias="0.473" />
++
++                            <CheckBox
++                                android:id="@+id/data"
++                                android:layout_width="wrap_content"
++                                android:layout_height="wrap_content"
++                                android:layout_marginEnd="24dp"
++                                android:text="Data"
++                                android:textColor="@color/lightblue"
++                                app:layout_constraintBottom_toBottomOf="@+id/control"
++                                app:layout_constraintEnd_toEndOf="parent"
++                                app:layout_constraintStart_toEndOf="@+id/control"
++                                app:layout_constraintTop_toTopOf="@+id/control"
++                                app:layout_constraintVertical_bias="0.0" />
++
++                        </androidx.constraintlayout.widget.ConstraintLayout>
++
++                    </androidx.cardview.widget.CardView>
++
++                </androidx.constraintlayout.widget.ConstraintLayout>
++
++            </androidx.constraintlayout.widget.ConstraintLayout>
++
++        </FrameLayout>
++
++        <FrameLayout
++            android:layout_width="match_parent"
++            android:layout_height="match_parent">
++
++            <androidx.constraintlayout.widget.ConstraintLayout
++                android:layout_width="match_parent"
++                android:layout_height="match_parent" />
++
++            <androidx.constraintlayout.widget.ConstraintLayout
++                android:layout_width="match_parent"
++                android:layout_height="match_parent"/>
++
++        </FrameLayout>
++    </androidx.constraintlayout.widget.ConstraintLayout>
++
++</androidx.constraintlayout.widget.ConstraintLayout>
+\ No newline at end of file
+Index: app/src/main/res/layout/recycler_view.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/layout/recycler_view.xml b/app/src/main/res/layout/recycler_view.xml
+new file mode 100644
+--- /dev/null	(date 1704395724000)
++++ b/app/src/main/res/layout/recycler_view.xml	(date 1704395724000)
+@@ -0,0 +1,143 @@
++<?xml version="1.0" encoding="utf-8"?>
++<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
++    xmlns:app="http://schemas.android.com/apk/res-auto"
++    xmlns:tools="http://schemas.android.com/tools"
++    android:id="@+id/item_device"
++    android:layout_width="match_parent"
++    android:layout_height="wrap_content"
++    android:orientation="horizontal"
++    android:padding="10dp">
++
++    <androidx.cardview.widget.CardView
++        android:layout_width="match_parent"
++        android:layout_height="wrap_content"
++        app:layout_constraintBottom_toBottomOf="parent"
++        app:layout_constraintEnd_toEndOf="parent"
++        app:layout_constraintStart_toStartOf="parent"
++        app:layout_constraintTop_toTopOf="parent">
++
++        <androidx.constraintlayout.widget.ConstraintLayout
++            android:layout_width="match_parent"
++            android:layout_height="match_parent">
++
++            <ImageView
++                android:id="@+id/img_box"
++                android:layout_width="296dp"
++                android:layout_height="114dp"
++                app:layout_constraintBottom_toBottomOf="parent"
++                app:layout_constraintEnd_toEndOf="parent"
++                app:layout_constraintHorizontal_bias="0.208"
++                app:layout_constraintStart_toStartOf="parent"
++                app:layout_constraintTop_toTopOf="parent"
++                tools:srcCompat="@drawable/gradient_rectangle" />
++
++            <TextView
++                android:id="@+id/nameAtHome"
++                android:layout_width="wrap_content"
++                android:layout_height="wrap_content"
++                android:fontFamily="@font/inter_bold"
++                android:text="CAM BIEN ANH SANG"
++                android:textColor="@color/lightblue"
++                android:textStyle="bold"
++                app:layout_constraintBottom_toBottomOf="parent"
++                app:layout_constraintEnd_toStartOf="@+id/button"
++                app:layout_constraintHorizontal_bias="0.141"
++                app:layout_constraintStart_toStartOf="@+id/img_box"
++                app:layout_constraintTop_toTopOf="parent"
++                app:layout_constraintVertical_bias="0.18" />
++
++            <TextView
++                android:id="@+id/nameDevice"
++                android:layout_width="wrap_content"
++                android:layout_height="wrap_content"
++                android:fontFamily="@font/inter_bold"
++                android:text="DHT11"
++                android:textColor="@color/lightblue"
++                app:layout_constraintBottom_toBottomOf="@+id/nameAtHome"
++                app:layout_constraintEnd_toEndOf="@+id/img_box"
++                app:layout_constraintStart_toEndOf="@+id/nameAtHome"
++                app:layout_constraintTop_toTopOf="@+id/nameAtHome" />
++
++            <ImageView
++                android:id="@+id/ImgHum"
++                android:layout_width="wrap_content"
++                android:layout_height="wrap_content"
++                app:layout_constraintBottom_toBottomOf="parent"
++                app:layout_constraintEnd_toEndOf="@+id/TempImg"
++                app:layout_constraintStart_toStartOf="@+id/TempImg"
++                app:layout_constraintTop_toBottomOf="@+id/TempImg"
++                app:srcCompat="@drawable/hum" />
++
++            <ImageView
++                android:id="@+id/TempImg"
++                android:layout_width="wrap_content"
++                android:layout_height="wrap_content"
++                app:layout_constraintBottom_toBottomOf="parent"
++                app:layout_constraintEnd_toEndOf="@+id/nameAtHome"
++                app:layout_constraintHorizontal_bias="0.504"
++                app:layout_constraintStart_toStartOf="@+id/nameAtHome"
++                app:layout_constraintTop_toBottomOf="@+id/nameAtHome"
++                app:layout_constraintVertical_bias="0.177"
++                app:srcCompat="@drawable/temp" />
++
++            <ImageView
++                android:id="@+id/Img_connect"
++                android:layout_width="wrap_content"
++                android:layout_height="wrap_content"
++                app:layout_constraintBottom_toBottomOf="parent"
++                app:layout_constraintEnd_toEndOf="@+id/nameDevice"
++                app:layout_constraintStart_toStartOf="@+id/nameDevice"
++                app:layout_constraintTop_toBottomOf="@+id/nameDevice"
++                app:layout_constraintVertical_bias="0.301"
++                app:srcCompat="@drawable/wifi" />
++
++            <TextView
++                android:id="@+id/connected"
++                android:layout_width="wrap_content"
++                android:layout_height="wrap_content"
++                android:fontFamily="@font/inter_bold"
++                android:text="Connected"
++                android:textColor="@color/lightblue"
++                app:layout_constraintBottom_toBottomOf="parent"
++                app:layout_constraintEnd_toEndOf="@+id/Img_connect"
++                app:layout_constraintStart_toStartOf="@+id/Img_connect"
++                app:layout_constraintTop_toBottomOf="@+id/Img_connect" />
++
++            <Button
++                android:id="@+id/button"
++                android:layout_width="55dp"
++                android:layout_height="36dp"
++                app:layout_constraintBottom_toBottomOf="parent"
++                app:layout_constraintEnd_toEndOf="parent"
++                app:layout_constraintStart_toEndOf="@+id/img_box"
++                app:layout_constraintTop_toTopOf="parent" />
++
++            <TextView
++                android:id="@+id/textView6"
++                android:layout_width="wrap_content"
++                android:layout_height="19dp"
++                android:text="Delete"
++                android:textColor="@color/white"
++                app:layout_constraintBottom_toBottomOf="@+id/button"
++                app:layout_constraintEnd_toEndOf="@+id/button"
++                app:layout_constraintStart_toStartOf="@+id/button"
++                app:layout_constraintTop_toTopOf="@+id/button" />
++
++            <Switch
++                android:id="@+id/sw_control"
++                android:layout_width="wrap_content"
++                android:layout_height="wrap_content"
++                android:checked="false"
++                android:padding="10dp"
++                android:theme="@style/mySwitch"
++                android:thumb="@drawable/thumb_selector"
++                android:track="@drawable/track_selector"
++                app:layout_constraintBottom_toBottomOf="@id/img_box"
++                app:layout_constraintEnd_toEndOf="@id/img_box"
++                app:layout_constraintHorizontal_bias="0.195"
++                app:layout_constraintStart_toStartOf="@id/img_box"
++                app:layout_constraintTop_toTopOf="@id/img_box"
++                app:layout_constraintVertical_bias="0.717" />
++        </androidx.constraintlayout.widget.ConstraintLayout>
++    </androidx.cardview.widget.CardView>
++</LinearLayout>
+\ No newline at end of file
+Index: app/src/main/res/layout/activity_detail.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/layout/activity_detail.xml b/app/src/main/res/layout/activity_detail.xml
+new file mode 100644
+--- /dev/null	(date 1704395724000)
++++ b/app/src/main/res/layout/activity_detail.xml	(date 1704395724000)
+@@ -0,0 +1,13 @@
++<!-- activity_detail.xml -->
++<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
++    android:layout_width="match_parent"
++    android:layout_height="match_parent">
++
++    <TextView
++        android:id="@+id/textHelloWorld"
++        android:layout_width="wrap_content"
++        android:layout_height="wrap_content"
++        android:text="Hello World!"
++        android:textSize="24sp"
++        android:layout_centerInParent="true"/>
++</RelativeLayout>
