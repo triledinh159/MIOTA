@@ -3,6 +3,7 @@ package com.example.miotav1;
 import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,17 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.amplifyframework.core.Amplify;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
 
 public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.DeviceHolder> {
@@ -82,8 +94,9 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.DeviceHold
             public void onClick(View v) {
                 int position = holder.getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION) {
-                    mListDevice.remove(position);
+                    Device removedDevice = mListDevice.remove(position);
                     notifyItemRemoved(position);
+                    updateJsonFileAfterDelete(removedDevice);
                 }
             }
         });
@@ -119,6 +132,58 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.DeviceHold
             holder.swControl.setVisibility(device.TypeDevice() == 1 ? View.VISIBLE : View.GONE);
         }
         holder.btnDelete.setTag(position);
+    }
+
+    private void updateJsonFileAfterDelete(Device removedDevice) {
+        File file = new File(context.getFilesDir(), "user.json");
+
+        // Read existing JSON content from the file
+        StringBuilder jsonContent = new StringBuilder();
+
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(file));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                jsonContent.append(line).append('\n');
+            }
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Parse existing JSON content
+        try {
+            JSONObject jsonData = new JSONObject(jsonContent.toString());
+
+            // Update devices array by removing the deleted device
+            JSONArray devicesArray = jsonData.getJSONArray("devices");
+            for (int i = 0; i < devicesArray.length(); i++) {
+                JSONObject deviceJson = devicesArray.getJSONObject(i);
+                if (deviceJson.optString("device").equals(removedDevice.getDevice())) {
+                    devicesArray.remove(i);
+                    break;  // Exit the loop once the device is found and removed
+                }
+            }
+
+            // Write the updated JSON content back to the file
+            FileWriter writer = new FileWriter(file);
+            writer.write(jsonData.toString());
+            writer.close();
+            uploadFileToS3();
+
+        } catch (JSONException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+    private void uploadFileToS3() {
+        File file = new File(context.getFilesDir(), "user.json");
+
+        Amplify.Storage.uploadFile(
+                "user.json",
+                file,
+                result -> Log.i("MyAmplifyApp", "Successfully uploaded: " + result.getKey()),
+                error -> Log.e("MyAmplifyApp", "Upload failed", error)
+        );
     }
 
     @Override

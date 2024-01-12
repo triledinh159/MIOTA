@@ -2,7 +2,6 @@ package com.example.miotav1;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -25,8 +24,6 @@ public class Login extends AppCompatActivity {
         EditText txtEmail = findViewById(R.id.txtEmail);
         EditText txtPassword = findViewById(R.id.txtPassword);
 
-        showProgressDialog();
-
         Amplify.Auth.signIn(
                 txtEmail.getText().toString(),
                 txtPassword.getText().toString(),
@@ -34,22 +31,6 @@ public class Login extends AppCompatActivity {
                 this::onLoginError
         );
     }
-    private ProgressDialog progressDialog;
-
-    private void showProgressDialog() {
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("Đang đăng nhập...");
-        progressDialog.setCancelable(false); // Ngăn chặn việc đóng progress bar khi chạm vào màn hình
-        progressDialog.show();
-    }
-
-    private void dismissProgressDialog() {
-        if (progressDialog != null && progressDialog.isShowing()) {
-            progressDialog.dismiss();
-        }
-    }
-
-
 
     private void onLoginError(AuthException e) {
         this.runOnUiThread(() ->{
