@@ -1,4 +1,25 @@
 {
+  "miota": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-miotav1-miota-152438-authRole",
+      "UnauthRoleArn": "arn:aws:iam::682756464594:role/amplify-miotav1-miota-152438-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::682756464594:role/amplify-miotav1-miota-152438-authRole",
+      "Region": "ap-southeast-1",
+      "DeploymentBucketName": "amplify-miotav1-miota-152438-deployment",
+      "UnauthRoleName": "amplify-miotav1-miota-152438-unauthRole",
+      "StackName": "amplify-miotav1-miota-152438",
+      "StackId": "arn:aws:cloudformation:ap-southeast-1:682756464594:stack/amplify-miotav1-miota-152438/b5848090-a623-11ee-b8a8-022b58860328",
+      "AmplifyAppId": "d32d9ib3mjrezq"
+    },
+    "categories": {
+      "auth": {
+        "miotav1dff86e70": {}
+      },
+      "storage": {
+        "s3efb1dfe2": {}
+      }
+    }
+  },
   "dev": {
     "awscloudformation": {
       "AuthRoleName": "amplify-miotav1-dev-230733-authRole",
@@ -35,27 +56,6 @@
       },
       "api": {
         "miotav1": {}
-      }
-    }
-  },
-  "miota": {
-    "awscloudformation": {
-      "AuthRoleName": "amplify-miotav1-miota-152438-authRole",
-      "UnauthRoleArn": "arn:aws:iam::682756464594:role/amplify-miotav1-miota-152438-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::682756464594:role/amplify-miotav1-miota-152438-authRole",
-      "Region": "ap-southeast-1",
-      "DeploymentBucketName": "amplify-miotav1-miota-152438-deployment",
-      "UnauthRoleName": "amplify-miotav1-miota-152438-unauthRole",
-      "StackName": "amplify-miotav1-miota-152438",
-      "StackId": "arn:aws:cloudformation:ap-southeast-1:682756464594:stack/amplify-miotav1-miota-152438/b5848090-a623-11ee-b8a8-022b58860328",
-      "AmplifyAppId": "d32d9ib3mjrezq"
-    },
-    "categories": {
-      "auth": {
-        "miotav1dff86e70": {}
-      },
-      "storage": {
-        "s3efb1dfe2": {}
       }
     }
   }
