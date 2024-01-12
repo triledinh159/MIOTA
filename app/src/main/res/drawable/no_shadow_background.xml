@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- res/drawable/no_shadow_background.xml -->
-    <shape xmlns:android="http://schemas.android.com/apk/res/android"
-        android:shape="rectangle">
-        <solid android:color="#FFFFFF" /> <!-- Chọn màu nền tùy chọn, ví dụ: trắng -->
-    </shape>
-</selector>
