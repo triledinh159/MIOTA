@@ -53,6 +53,9 @@
     "categories": {
       "auth": {
         "miotav1dff86e70": {}
+      },
+      "storage": {
+        "s3efb1dfe2": {}
       }
     }
   }

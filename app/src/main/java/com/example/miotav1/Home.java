@@ -1,11 +1,15 @@
 package com.example.miotav1;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -14,7 +18,9 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -55,6 +61,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+
+
 
 class MqttMessageReceiver extends AsyncTask<Void, String, Void> {
 
@@ -103,6 +111,27 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
 
     private DrawerLayout mDrawerLayout;
     Context context;
+
+
+
+    //Khai báo array list, adapter, với các biến để hiển thị lên màn hình homescreen và recyclerView
+    private ArrayList<Device> deviceList;
+    private DeviceAdapter deviceAdapter;
+    ImageView ImgBg;
+
+    TextView home_title,iot_title;
+    RecyclerView rcv_listDevice;
+    Button btnAdd;
+
+    Device added_device;
+
+    private static final int REQUEST_CODE_ADD_ITEM = 1;
+
+    //
+
+
+
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -130,6 +159,39 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
             getInfo();
         } catch (Exception e){
             Log.e("mqtt-tri", "errrrrrrrrr");
+        }
+
+        //
+        setContentView(R.layout.activity_home_screen);
+        deviceList = new ArrayList<>();
+        deviceAdapter = new DeviceAdapter(this, deviceList);
+        ImgBg = (ImageView) findViewById(R.id.bgimage);
+        rcv_listDevice = (RecyclerView) findViewById(R.id.recycleList);
+        rcv_listDevice.setLayoutManager(new LinearLayoutManager(this));
+        rcv_listDevice.setAdapter(deviceAdapter);
+        btnAdd = (Button) findViewById(R.id.addButton);
+        btnAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Home.this, AddDevice.class);
+                startActivityForResult(intent, REQUEST_CODE_ADD_ITEM);
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data){
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_ADD_ITEM && data != null) {
+            Device newDevice = (Device) data.getSerializableExtra("new_Device");
+//            String name = newDevice.getName();
+//            String topic = newDevice.getTopic();
+//            int type = newDevice.TypeDevice();
+//            String device = newDevice.getDevice();
+//            Device addDevice = new Device(type, device, topic, name);topic
+            added_device = newDevice;
+            deviceList.add(newDevice);
+            deviceAdapter.notifyDataSetChanged();
         }
     }
 
@@ -169,6 +231,13 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
                 String topic = deviceObject.getString("topic");
                 topics.add(topic);
                 Log.d("mqtt-tri", topic);
+                String typeDevice = (deviceObject.isNull("type")) ? "" : deviceObject.getString("type");
+                String device = (deviceObject.isNull("device")) ? "" : deviceObject.getString("device");
+                String name = (deviceObject.isNull("name")) ? "" : deviceObject.getString("name");
+                Device newDevice = new Device(typeDevice,device, topic, name);
+                deviceList.add(newDevice);
+                deviceAdapter.notifyDataSetChanged();
+
             }
 
             subscribeToTopics(topics);
