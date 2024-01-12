@@ -1,0 +1,190 @@
+Index: app/build.gradle
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>plugins {\r\n    id 'com.android.application'\r\n}\r\n\r\nandroid {\r\n    namespace 'com.example.miotav1'\r\n    compileSdk 33\r\n\r\n    defaultConfig {\r\n        applicationId \"com.example.miotav1\"\r\n        minSdk 24\r\n        targetSdk 33\r\n        versionCode 1\r\n        versionName \"1.0\"\r\n\r\n        testInstrumentationRunner \"androidx.test.runner.AndroidJUnitRunner\"\r\n    }\r\n\r\n    buildTypes {\r\n        release {\r\n            minifyEnabled false\r\n            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'\r\n        }\r\n    }\r\n    compileOptions {\r\n        // Support for Java 8 features\r\n        coreLibraryDesugaringEnabled true\r\n        sourceCompatibility JavaVersion.VERSION_1_8\r\n        targetCompatibility JavaVersion.VERSION_1_8\r\n    }\r\n    buildFeatures {\r\n        compose true\r\n    }\r\n    composeOptions {\r\n        kotlinCompilerExtensionVersion '1.2.0'\r\n    }\r\n    packagingOptions {\r\n        exclude(\"META-INF/DEPENDENCIES\")\r\n        exclude(\"META-INF/LICENSE\")\r\n        exclude(\"META-INF/LICENSE.txt\")\r\n        exclude(\"META-INF/license.txt\")\r\n        exclude(\"META-INF/NOTICE\")\r\n        exclude(\"META-INF/NOTICE.txt\")\r\n        exclude(\"META-INF/notice.txt\")\r\n        exclude(\"META-INF/ASL2.0\")\r\n        exclude(\"META-INF/INDEX.LIST\")\r\n        exclude(\"META-INF/io.netty.versions.properties\")\r\n        exclude(\"META-INF/*.kotlin_module\")\r\n    }\r\n}\r\n\r\n\r\ndependencies {\r\n\r\n    implementation 'androidx.appcompat:appcompat:1.6.1'\r\n    implementation 'com.google.android.material:material:1.5.0'\r\n    implementation 'androidx.constraintlayout:constraintlayout:2.1.3'\r\n    testImplementation 'junit:junit:4.13.2'\r\n    androidTestImplementation 'androidx.test.ext:junit:1.1.5'\r\n    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'\r\n    // Amplify core dependency\r\n    implementation 'com.amplifyframework:core:2.13.2'\r\n\r\n    // Support for Java 8 features\r\n    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'\r\n    implementation 'com.amplifyframework:aws-storage-s3:2.14.6'\r\n    implementation 'com.amplifyframework:aws-auth-cognito:2.14.6'\r\n    // Authenticator dependency\r\n    implementation 'com.amplifyframework.ui:authenticator:1.0.0'\r\n    implementation 'com.amplifyframework:aws-api:2.13.2'\r\n    implementation 'com.amplifyframework:aws-datastore:2.13.2'\r\n    implementation('org.eclipse.paho:org.eclipse.paho.android.service:1.0.2') {\r\n        exclude module: 'support-v4'\r\n    }\r\n    implementation 'com.hivemq:hivemq-mqtt-client:1.3.0'\r\n    implementation 'androidx.localbroadcastmanager:localbroadcastmanager:1.1.0'\r\n    implementation(platform(\"com.hivemq:hivemq-mqtt-client-websocket:1.3.0\"))\r\n    implementation(platform(\"com.hivemq:hivemq-mqtt-client-proxy:1.3.0\"))\r\n    implementation(\"com.hivemq:hivemq-mqtt-client-reactor:1.3.0\")\r\n    implementation 'com.github.PhilJay:MPAndroidChart:v3.0.2'\r\n    implementation 'com.google.code.gson:gson:2.4'\r\n    implementation(platform(\"software.amazon.awssdk:bom:2.21.1\"))\r\n    implementation(\"software.amazon.awssdk:s3\")\r\n    implementation group: 'commons-io', name: 'commons-io', version: '2.11.0'\r\n    implementation 'org.apache.httpcomponents:httpclient:4.5.13'\r\n    implementation 'com.amazonaws:aws-android-sdk-s3:2.73.0'\r\n    implementation 'com.amazonaws:aws-android-sdk-mobile-client:2.73.0'\r\n    implementation 'com.amazonaws:aws-android-sdk-auth-userpools:2.73.0'\r\n    implementation 'com.amazonaws:aws-android-sdk-auth-userpools:2.73.0'\r\n    implementation 'com.amazonaws:aws-android-sdk-auth-ui:2.73.0'\r\n    implementation 'com.amazonaws:aws-android-sdk-cognitoauth:2.73.0'\r\n    implementation(platform(\"org.jetbrains.kotlin:kotlin-bom:1.8.0\"))\r\n    implementation 'com.amplifyframework:aws-storage-s3:2.14.6'\r\n    implementation 'com.amplifyframework:aws-auth-cognito:2.14.6'\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/build.gradle b/app/build.gradle
+--- a/app/build.gradle	(revision 58d5d090dfc3abc0840d3818dd3385d75e81376f)
++++ b/app/build.gradle	(date 1705041312603)
+@@ -4,7 +4,7 @@
+ 
+ android {
+     namespace 'com.example.miotav1'
+-    compileSdk 33
++    compileSdk 34
+ 
+     defaultConfig {
+         applicationId "com.example.miotav1"
+Index: app/src/main/java/com/example/miotav1/Home.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.miotav1;\r\n\r\nimport androidx.annotation.NonNull;\r\nimport androidx.annotation.Nullable;\r\nimport androidx.appcompat.app.ActionBarDrawerToggle;\r\nimport androidx.appcompat.app.AppCompatActivity;\r\nimport androidx.appcompat.widget.Toolbar;\r\nimport androidx.drawerlayout.widget.DrawerLayout;\r\nimport androidx.recyclerview.widget.LinearLayoutManager;\r\nimport androidx.recyclerview.widget.RecyclerView;\r\n\r\nimport android.annotation.SuppressLint;\r\nimport android.content.Context;\r\nimport android.content.Intent;\r\nimport android.os.AsyncTask;\r\nimport android.os.Bundle;\r\nimport android.os.Handler;\r\nimport android.util.Log;\r\nimport android.view.MenuItem;\r\nimport android.view.View;\r\nimport android.widget.Button;\r\nimport android.widget.FrameLayout;\r\nimport android.widget.ImageView;\r\nimport android.widget.TextView;\r\nimport android.widget.Toast;\r\n\r\nimport com.amplifyframework.auth.cognito.result.AWSCognitoAuthSignOutResult;\r\nimport com.amplifyframework.auth.cognito.result.GlobalSignOutError;\r\nimport com.amplifyframework.auth.cognito.result.HostedUIError;\r\nimport com.amplifyframework.auth.cognito.result.RevokeTokenError;\r\nimport com.amplifyframework.core.Amplify;\r\n\r\n\r\nimport org.apache.commons.io.FileUtils;\r\nimport org.eclipse.paho.android.service.MqttAndroidClient;\r\nimport org.eclipse.paho.client.mqttv3.IMqttActionListener;\r\nimport org.eclipse.paho.client.mqttv3.IMqttToken;\r\n//import org.eclipse.paho.client.mqttv3.MqttClient;\r\nimport org.eclipse.paho.client.mqttv3.MqttCallback;\r\nimport org.eclipse.paho.client.mqttv3.MqttConnectOptions;\r\nimport org.eclipse.paho.client.mqttv3.MqttException;\r\nimport org.eclipse.paho.client.mqttv3.MqttMessage;\r\nimport org.json.JSONArray;\r\nimport org.json.JSONException;\r\nimport org.json.JSONObject;\r\n\r\nimport com.google.android.material.navigation.NavigationView;\r\nimport com.hivemq.client.mqtt.MqttClient;\r\nimport com.hivemq.client.mqtt.MqttGlobalPublishFilter;\r\nimport com.hivemq.client.mqtt.datatypes.MqttQos;\r\nimport com.hivemq.client.mqtt.mqtt5.Mqtt5BlockingClient;\r\nimport com.hivemq.client.mqtt.mqtt5.message.publish.Mqtt5Publish;\r\n\r\nimport static com.hivemq.client.mqtt.MqttGlobalPublishFilter.ALL;\r\nimport static java.nio.charset.StandardCharsets.UTF_8;\r\n\r\nimport java.io.File;\r\nimport java.io.IOException;\r\nimport java.nio.charset.StandardCharsets;\r\nimport java.util.ArrayList;\r\nimport java.util.List;\r\nimport java.util.Optional;\r\nimport java.util.concurrent.TimeUnit;\r\n\r\n\r\n\r\nclass MqttMessageReceiver extends AsyncTask<Void, String, Void> {\r\n\r\n    private Mqtt5BlockingClient mqttClient;\r\n    private TextView tvReceivedMessage;\r\n\r\n    MqttMessageReceiver(Mqtt5BlockingClient mqttClient, TextView tvReceivedMessage) {\r\n        this.mqttClient = mqttClient;\r\n        this.tvReceivedMessage = tvReceivedMessage;\r\n    }\r\n\r\n    @Override\r\n    protected Void doInBackground(Void... params) {\r\n        try (final Mqtt5BlockingClient.Mqtt5Publishes publishes = mqttClient.publishes(MqttGlobalPublishFilter.ALL)) {\r\n            while (true) {\r\n                Optional<Mqtt5Publish> message = publishes.receive(10, TimeUnit.SECONDS);\r\n\r\n                if (message.isPresent()) {\r\n                    String receivedMessage = new String(message.get().getPayloadAsBytes(), UTF_8);\r\n                    Log.d(\"mqtt-tri\", \"Received message: \" + receivedMessage);\r\n                    publishProgress(receivedMessage);\r\n                } else {\r\n                    Log.d(\"mqtt-tri\", \"No message received within the specified time.\");\r\n                }\r\n            }\r\n        } catch (Exception e) {\r\n            Log.e(\"mqtt-tri\", \"Error receiving message: \" + e.getMessage());\r\n        }\r\n        return null;\r\n    }\r\n\r\n    @Override\r\n    protected void onProgressUpdate(String... values) {\r\n        // Update UI on the main thread\r\n        tvReceivedMessage.setText(values[0]);\r\n    }\r\n}\r\n\r\npublic class Home extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {\r\n    private static final int LAYOUT_HOME = 0;\r\n    private String host, username, password, topic;\r\n    private Mqtt5BlockingClient mqttClient;\r\n    private TextView tvReceivedMessage;\r\n\r\n    private int mCurrentLayout = LAYOUT_HOME;\r\n\r\n    private DrawerLayout mDrawerLayout;\r\n    Context context;\r\n\r\n\r\n\r\n    //Khai báo array list, adapter, với các biến để hiển thị lên màn hình homescreen và recyclerView\r\n    private ArrayList<Device> deviceList;\r\n    private DeviceAdapter deviceAdapter;\r\n    ImageView ImgBg;\r\n\r\n    TextView home_title,iot_title;\r\n    RecyclerView rcv_listDevice;\r\n    Button btnAdd;\r\n\r\n    Device added_device;\r\n\r\n    private static final int REQUEST_CODE_ADD_ITEM = 1;\r\n\r\n    //\r\n\r\n\r\n\r\n    @SuppressLint(\"MissingInflatedId\")\r\n    @Override\r\n    protected void onCreate(Bundle savedInstanceState) {\r\n        super.onCreate(savedInstanceState);\r\n        setContentView(R.layout.activity_main);\r\n\r\n        Toolbar toolbar = findViewById(R.id.toolbar);\r\n        setSupportActionBar(toolbar);\r\n\r\n        mDrawerLayout = findViewById(R.id.drawerLayout);\r\n        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.nav_drawer_open, R.string.nav_drawer_close);\r\n        mDrawerLayout.addDrawerListener(toggle);\r\n        toggle.syncState();\r\n\r\n        NavigationView navigationView = findViewById(R.id.navigation_view);\r\n        navigationView.setNavigationItemSelectedListener(this);\r\n\r\n        FrameLayout frameLayout = findViewById(R.id.content_frame);\r\n        frameLayout.removeAllViews();  // Xóa tất cả các views hiện tại trong FrameLayout\r\n        View inflatedView = getLayoutInflater().inflate(R.layout.activity_home_screen, frameLayout, true);\r\n\r\n\r\n        tvReceivedMessage = findViewById(R.id.tvReceivedMessage);\r\n\r\n        try{\r\n            getInfo();\r\n        } catch (Exception e){\r\n            Log.e(\"mqtt-tri\", \"errrrrrrrrr\");\r\n        }\r\n\r\n        //\r\n        setContentView(R.layout.activity_home_screen);\r\n        deviceList = new ArrayList<>();\r\n        deviceAdapter = new DeviceAdapter(this, deviceList);\r\n        ImgBg = (ImageView) findViewById(R.id.bgimage);\r\n        rcv_listDevice = (RecyclerView) findViewById(R.id.recycleList);\r\n        rcv_listDevice.setLayoutManager(new LinearLayoutManager(this));\r\n        rcv_listDevice.setAdapter(deviceAdapter);\r\n        btnAdd = (Button) findViewById(R.id.addButton);\r\n        btnAdd.setOnClickListener(new View.OnClickListener() {\r\n            @Override\r\n            public void onClick(View v) {\r\n                Intent intent = new Intent(Home.this, AddDevice.class);\r\n                startActivityForResult(intent, REQUEST_CODE_ADD_ITEM);\r\n            }\r\n        });\r\n    }\r\n\r\n    @Override\r\n    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data){\r\n        super.onActivityResult(requestCode, resultCode, data);\r\n        if (requestCode == REQUEST_CODE_ADD_ITEM && data != null) {\r\n            Device newDevice = (Device) data.getSerializableExtra(\"new_Device\");\r\n//            String name = newDevice.getName();\r\n//            String topic = newDevice.getTopic();\r\n//            int type = newDevice.TypeDevice();\r\n//            String device = newDevice.getDevice();\r\n//            Device addDevice = new Device(type, device, topic, name);topic\r\n            added_device = newDevice;\r\n            deviceList.add(newDevice);\r\n            deviceAdapter.notifyDataSetChanged();\r\n        }\r\n    }\r\n\r\n    private void getInfo() throws InterruptedException {\r\n        try {\r\n\r\n            File exampleFile = new File(getApplicationContext().getFilesDir(), \"user.json\");\r\n            Amplify.Storage.downloadFile(\r\n                    \"user.json\",\r\n                    exampleFile,\r\n                    result -> {\r\n                        Log.i(\"MyAmplifyApp\", \"Successfully downloaded: \" + result.getFile().getName());\r\n                        try {\r\n                            String jsonString = FileUtils.readFileToString(result.getFile(), StandardCharsets.UTF_8);\r\n                            processConfig(jsonString);\r\n                            Log.d(\"mqtt-tri\", \"read\" + jsonString);\r\n                        } catch (IOException e) {\r\n                            throw new RuntimeException(e);\r\n                        }\r\n\r\n\r\n                    },\r\n                    error -> Log.e(\"MyAmplifyApp\",  \"Download Failure\", error)\r\n            );\r\n        } catch(Exception error) {\r\n            Log.e(\"MyAmplifyApp\", \"Download Failure\", error);\r\n        }\r\n    }\r\n    private void processConfig(String jsonString) {\r\n        try {\r\n            JSONObject configObject = new JSONObject(jsonString);\r\n            JSONArray devicesArray = configObject.getJSONArray(\"devices\");\r\n            List<String> topics = new ArrayList<>();\r\n\r\n            for (int i = 0; i < devicesArray.length(); i++) {\r\n                JSONObject deviceObject = devicesArray.getJSONObject(i);\r\n                String topic = deviceObject.getString(\"topic\");\r\n                topics.add(topic);\r\n                Log.d(\"mqtt-tri\", topic);\r\n                String typeDevice = (deviceObject.isNull(\"type\")) ? \"\" : deviceObject.getString(\"type\");\r\n                String device = (deviceObject.isNull(\"device\")) ? \"\" : deviceObject.getString(\"device\");\r\n                String name = (deviceObject.isNull(\"name\")) ? \"\" : deviceObject.getString(\"name\");\r\n                Device newDevice = new Device(typeDevice,device, topic, name);\r\n                deviceList.add(newDevice);\r\n                deviceAdapter.notifyDataSetChanged();\r\n\r\n            }\r\n\r\n            subscribeToTopics(topics);\r\n\r\n        } catch (JSONException e) {\r\n            Log.e(\"mqtt-tri\", \"Error parsing JSON: \" + e.getMessage());\r\n        }\r\n    }\r\n    private void subscribeToTopics(List<String> topics) {\r\n        host = \"d567f3932ca749f78c9e75dac4e4eab5.s2.eu.hivemq.cloud\";\r\n        username = \"trild\";\r\n        password = \"Tri123456\";\r\n        try {\r\n            // create an MQTT client\r\n            mqttClient = MqttClient.builder()\r\n                    .useMqttVersion5()\r\n                    .serverHost(host)\r\n                    .serverPort(8883)\r\n                    .sslWithDefaultConfig()\r\n                    .buildBlocking();\r\n\r\n            // connect to HiveMQ Cloud with TLS and username/pw\r\n            mqttClient.connectWith()\r\n                    .simpleAuth()\r\n                    .username(username)\r\n                    .password(UTF_8.encode(password))\r\n                    .applySimpleAuth()\r\n                    .send();\r\n\r\n            Log.d(\"mqtt-tri\", \"Connected successfully\");\r\n\r\n            // Subscribe to all topics\r\n            for (String topic : topics) {\r\n                mqttClient.subscribeWith()\r\n                        .topicFilter(topic)\r\n                        .send();\r\n                Log.d(\"mqtt-tri\", \"Subscribed to topic: \" + topic);\r\n            }\r\n\r\n            // Receive messages for all subscribed topics\r\n            try {\r\n                // Create an instance of MqttMessageReceiver and execute it\r\n                MqttMessageReceiver mqttMessageReceiver = new MqttMessageReceiver(mqttClient, tvReceivedMessage);\r\n                mqttMessageReceiver.execute();\r\n\r\n                // The rest of your existing code...\r\n            } catch (Exception e) {\r\n                Log.e(\"mqtt-tri\", \"er=\");\r\n            }\r\n\r\n        } catch (Exception e) {\r\n            Log.e(\"mqtt-tri\", \"Error connecting to MQTT broker: \" + e.getMessage());\r\n        }\r\n    }\r\n    // Method to handle Signout\r\n    private void signOut() {\r\n        Amplify.Auth.signOut(signOutResult -> {\r\n            if (signOutResult instanceof AWSCognitoAuthSignOutResult.CompleteSignOut) {\r\n                // Sign Out completed fully and without errors.\r\n                Log.i(\"AuthQuickStart\", \"Signed out successfully\");\r\n                //Back To Login screen\r\n                navigateToLogin();\r\n            } else if (signOutResult instanceof AWSCognitoAuthSignOutResult.PartialSignOut) {\r\n                // Sign Out completed with some errors. User is signed out of the device.\r\n                AWSCognitoAuthSignOutResult.PartialSignOut partialSignOutResult =\r\n                        (AWSCognitoAuthSignOutResult.PartialSignOut) signOutResult;\r\n\r\n                HostedUIError hostedUIError = partialSignOutResult.getHostedUIError();\r\n                if (hostedUIError != null) {\r\n                    Log.e(\"AuthQuickStart\", \"HostedUI Error\", hostedUIError.getException());\r\n                    // Optional: Re-launch hostedUIError.getUrl() in a Custom tab to clear Cognito web session.\r\n                }\r\n\r\n                GlobalSignOutError globalSignOutError = partialSignOutResult.getGlobalSignOutError();\r\n                if (globalSignOutError != null) {\r\n                    Log.e(\"AuthQuickStart\", \"GlobalSignOut Error\", globalSignOutError.getException());\r\n                    // Optional: Use escape hatch to retry revocation of globalSignOutError.getAccessToken().\r\n                }\r\n\r\n                RevokeTokenError revokeTokenError = partialSignOutResult.getRevokeTokenError();\r\n                if (revokeTokenError != null) {\r\n                    Log.e(\"AuthQuickStart\", \"RevokeToken Error\", revokeTokenError.getException());\r\n                    // Optional: Use escape hatch to retry revocation of revokeTokenError.getRefreshToken().\r\n                }\r\n            } else if (signOutResult instanceof AWSCognitoAuthSignOutResult.FailedSignOut) {\r\n                AWSCognitoAuthSignOutResult.FailedSignOut failedSignOutResult =\r\n                        (AWSCognitoAuthSignOutResult.FailedSignOut) signOutResult;\r\n                // Sign Out failed with an exception, leaving the user signed in.\r\n                Log.e(\"AuthQuickStart\", \"Sign out Failed\", failedSignOutResult.getException());\r\n            }\r\n        });\r\n    }\r\n    // Method to navigate to the Login screen\r\n    private void navigateToLogin() {\r\n        Intent intent = new Intent(this, Login.class);\r\n        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK); // Clear the back stack\r\n        startActivity(intent);\r\n        finish(); // Close the current activity (Home)\r\n    }\r\n    private boolean doubleBackToExitPressedOnce = false;\r\n\r\n    @Override\r\n    public void onBackPressed() {\r\n        if (doubleBackToExitPressedOnce) {\r\n            finishAndRestartApp(); // Modified: finish the activity and restart the app\r\n            return;\r\n        }\r\n\r\n        this.doubleBackToExitPressedOnce = true;\r\n        Toast.makeText(this, \"Press again to exit\", Toast.LENGTH_SHORT).show();\r\n\r\n        new Handler().postDelayed(() -> doubleBackToExitPressedOnce = false, 2000);\r\n    }\r\n\r\n    private void finishAndRestartApp() {\r\n        finish(); // Finish the current activity\r\n        Intent intent = new Intent(this, MainActivity.class);\r\n        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);\r\n        startActivity(intent); // Restart the app by starting MainActivity\r\n        moveTaskToBack(true); // Move the task to the back of the stack\r\n        android.os.Process.killProcess(android.os.Process.myPid()); // Kill the process\r\n        System.exit(1); // Exit the app\r\n    }\r\n    protected void onDestroy() {\r\n        super.onDestroy();\r\n        // Disconnect the MQTT client when the activity is destroyed\r\n        if (mqttClient != null && mqttClient.getState().isConnected()) {\r\n            mqttClient.disconnect();\r\n        }\r\n    }\r\n\r\n    @Override\r\n    public boolean onNavigationItemSelected(@NonNull MenuItem item) {\r\n        return false;\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/miotav1/Home.java b/app/src/main/java/com/example/miotav1/Home.java
+--- a/app/src/main/java/com/example/miotav1/Home.java	(revision 58d5d090dfc3abc0840d3818dd3385d75e81376f)
++++ b/app/src/main/java/com/example/miotav1/Home.java	(date 1705042832148)
+@@ -189,9 +189,10 @@
+ //            int type = newDevice.TypeDevice();
+ //            String device = newDevice.getDevice();
+ //            Device addDevice = new Device(type, device, topic, name);topic
+-            added_device = newDevice;
+-            deviceList.add(newDevice);
+-            deviceAdapter.notifyDataSetChanged();
++            runOnUiThread(() -> {
++                deviceList.add(newDevice);
++                deviceAdapter.notifyDataSetChanged();
++            });
+         }
+     }
+ 
+@@ -234,10 +235,12 @@
+                 String typeDevice = (deviceObject.isNull("type")) ? "" : deviceObject.getString("type");
+                 String device = (deviceObject.isNull("device")) ? "" : deviceObject.getString("device");
+                 String name = (deviceObject.isNull("name")) ? "" : deviceObject.getString("name");
+-                Device newDevice = new Device(typeDevice,device, topic, name);
+-                deviceList.add(newDevice);
+-                deviceAdapter.notifyDataSetChanged();
+-
++                Device newDevice = new Device(typeDevice, device, topic, name);
++
++                runOnUiThread(() -> {
++                    deviceList.add(newDevice);
++                    deviceAdapter.notifyDataSetChanged();
++                });
+             }
+ 
+             subscribeToTopics(topics);
+Index: .idea/gradle.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"GradleMigrationSettings\" migrationVersion=\"1\" />\r\n  <component name=\"GradleSettings\">\r\n    <option name=\"linkedExternalProjectsSettings\">\r\n      <GradleProjectSettings>\r\n        <option name=\"testRunner\" value=\"GRADLE\" />\r\n        <option name=\"distributionType\" value=\"DEFAULT_WRAPPED\" />\r\n        <option name=\"externalProjectPath\" value=\"$PROJECT_DIR$\" />\r\n        <option name=\"modules\">\r\n          <set>\r\n            <option value=\"$PROJECT_DIR$\" />\r\n            <option value=\"$PROJECT_DIR$/app\" />\r\n          </set>\r\n        </option>\r\n      </GradleProjectSettings>\r\n    </option>\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/gradle.xml b/.idea/gradle.xml
+--- a/.idea/gradle.xml	(revision 58d5d090dfc3abc0840d3818dd3385d75e81376f)
++++ b/.idea/gradle.xml	(date 1705041331953)
+@@ -7,6 +7,7 @@
+         <option name="testRunner" value="GRADLE" />
+         <option name="distributionType" value="DEFAULT_WRAPPED" />
+         <option name="externalProjectPath" value="$PROJECT_DIR$" />
++        <option name="gradleJvm" value="jbr-17" />
+         <option name="modules">
+           <set>
+             <option value="$PROJECT_DIR$" />
+Index: .idea/misc.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><project version=\"4\">\r\n  <component name=\"ExternalStorageConfigurationManager\" enabled=\"true\" />\r\n  <component name=\"ProjectRootManager\" version=\"2\" languageLevel=\"JDK_17\" project-jdk-name=\"jbr-17\" project-jdk-type=\"JavaSDK\">\r\n    <output url=\"file://$PROJECT_DIR$/build/classes\" />\r\n  </component>\r\n  <component name=\"ProjectType\">\r\n    <option name=\"id\" value=\"Android\" />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/misc.xml b/.idea/misc.xml
+--- a/.idea/misc.xml	(revision 58d5d090dfc3abc0840d3818dd3385d75e81376f)
++++ b/.idea/misc.xml	(date 1705041331922)
+@@ -1,6 +1,7 @@
++<?xml version="1.0" encoding="UTF-8"?>
+ <project version="4">
+   <component name="ExternalStorageConfigurationManager" enabled="true" />
+-  <component name="ProjectRootManager" version="2" languageLevel="JDK_17" project-jdk-name="jbr-17" project-jdk-type="JavaSDK">
++  <component name="ProjectRootManager" version="2" languageLevel="JDK_17" default="true" project-jdk-name="jbr-17" project-jdk-type="JavaSDK">
+     <output url="file://$PROJECT_DIR$/build/classes" />
+   </component>
+   <component name="ProjectType">
+Index: amplify/.config/project-config.json
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>{\r\n  \"projectName\": \"MIOTAv1\",\r\n  \"version\": \"3.1\",\r\n  \"frontend\": \"android\",\r\n  \"android\": {\r\n    \"config\": {\r\n      \"ResDir\": \"app/src/main/res\"\r\n    }\r\n  },\r\n  \"providers\": [\r\n    \"awscloudformation\"\r\n  ]\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/amplify/.config/project-config.json b/amplify/.config/project-config.json
+--- a/amplify/.config/project-config.json	(revision 58d5d090dfc3abc0840d3818dd3385d75e81376f)
++++ b/amplify/.config/project-config.json	(date 1705042214597)
+@@ -1,4 +1,7 @@
+ {
++  "providers": [
++    "awscloudformation"
++  ],
+   "projectName": "MIOTAv1",
+   "version": "3.1",
+   "frontend": "android",
+@@ -6,8 +9,5 @@
+     "config": {
+       "ResDir": "app/src/main/res"
+     }
+-  },
+-  "providers": [
+-    "awscloudformation"
+-  ]
++  }
+ }
+\ No newline at end of file
+Index: amplify/team-provider-info.json
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>{\r\n  \"dev\": {\r\n    \"awscloudformation\": {\r\n      \"AuthRoleName\": \"amplify-miotav1-dev-230733-authRole\",\r\n      \"UnauthRoleArn\": \"arn:aws:iam::689890720727:role/amplify-miotav1-dev-230733-unauthRole\",\r\n      \"AuthRoleArn\": \"arn:aws:iam::689890720727:role/amplify-miotav1-dev-230733-authRole\",\r\n      \"Region\": \"ap-southeast-1\",\r\n      \"DeploymentBucketName\": \"amplify-miotav1-dev-230733-deployment\",\r\n      \"UnauthRoleName\": \"amplify-miotav1-dev-230733-unauthRole\",\r\n      \"StackName\": \"amplify-miotav1-dev-230733\",\r\n      \"StackId\": \"arn:aws:cloudformation:ap-southeast-1:689890720727:stack/amplify-miotav1-dev-230733/ceebc9f0-57cf-11ee-a14d-062305c20852\",\r\n      \"AmplifyAppId\": \"d3uhgjdugazy01\"\r\n    },\r\n    \"categories\": {\r\n      \"auth\": {\r\n        \"miotav13ef554dd\": {}\r\n      }\r\n    }\r\n  },\r\n  \"devtest\": {\r\n    \"awscloudformation\": {\r\n      \"AuthRoleName\": \"amplify-miotav1-devtest-15027-authRole\",\r\n      \"UnauthRoleArn\": \"arn:aws:iam::689890720727:role/amplify-miotav1-devtest-15027-unauthRole\",\r\n      \"AuthRoleArn\": \"arn:aws:iam::689890720727:role/amplify-miotav1-devtest-15027-authRole\",\r\n      \"Region\": \"ap-southeast-1\",\r\n      \"DeploymentBucketName\": \"amplify-miotav1-devtest-15027-deployment\",\r\n      \"UnauthRoleName\": \"amplify-miotav1-devtest-15027-unauthRole\",\r\n      \"StackName\": \"amplify-miotav1-devtest-15027\",\r\n      \"StackId\": \"arn:aws:cloudformation:ap-southeast-1:689890720727:stack/amplify-miotav1-devtest-15027/108f1d20-5a42-11ee-9c07-028b58e9dbb0\",\r\n      \"AmplifyAppId\": \"d3uhgjdugazy01\"\r\n    },\r\n    \"categories\": {\r\n      \"auth\": {\r\n        \"miotav13ef554dd\": {}\r\n      },\r\n      \"api\": {\r\n        \"miotav1\": {}\r\n      }\r\n    }\r\n  },\r\n  \"miota\": {\r\n    \"awscloudformation\": {\r\n      \"AuthRoleName\": \"amplify-miotav1-miota-152438-authRole\",\r\n      \"UnauthRoleArn\": \"arn:aws:iam::682756464594:role/amplify-miotav1-miota-152438-unauthRole\",\r\n      \"AuthRoleArn\": \"arn:aws:iam::682756464594:role/amplify-miotav1-miota-152438-authRole\",\r\n      \"Region\": \"ap-southeast-1\",\r\n      \"DeploymentBucketName\": \"amplify-miotav1-miota-152438-deployment\",\r\n      \"UnauthRoleName\": \"amplify-miotav1-miota-152438-unauthRole\",\r\n      \"StackName\": \"amplify-miotav1-miota-152438\",\r\n      \"StackId\": \"arn:aws:cloudformation:ap-southeast-1:682756464594:stack/amplify-miotav1-miota-152438/b5848090-a623-11ee-b8a8-022b58860328\",\r\n      \"AmplifyAppId\": \"d32d9ib3mjrezq\"\r\n    },\r\n    \"categories\": {\r\n      \"auth\": {\r\n        \"miotav1dff86e70\": {}\r\n      },\r\n      \"storage\": {\r\n        \"s3efb1dfe2\": {}\r\n      }\r\n    }\r\n  }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/amplify/team-provider-info.json b/amplify/team-provider-info.json
+--- a/amplify/team-provider-info.json	(revision 58d5d090dfc3abc0840d3818dd3385d75e81376f)
++++ b/amplify/team-provider-info.json	(date 1705042234838)
+@@ -1,4 +1,25 @@
+ {
++  "miota": {
++    "awscloudformation": {
++      "AuthRoleName": "amplify-miotav1-miota-152438-authRole",
++      "UnauthRoleArn": "arn:aws:iam::682756464594:role/amplify-miotav1-miota-152438-unauthRole",
++      "AuthRoleArn": "arn:aws:iam::682756464594:role/amplify-miotav1-miota-152438-authRole",
++      "Region": "ap-southeast-1",
++      "DeploymentBucketName": "amplify-miotav1-miota-152438-deployment",
++      "UnauthRoleName": "amplify-miotav1-miota-152438-unauthRole",
++      "StackName": "amplify-miotav1-miota-152438",
++      "StackId": "arn:aws:cloudformation:ap-southeast-1:682756464594:stack/amplify-miotav1-miota-152438/b5848090-a623-11ee-b8a8-022b58860328",
++      "AmplifyAppId": "d32d9ib3mjrezq"
++    },
++    "categories": {
++      "auth": {
++        "miotav1dff86e70": {}
++      },
++      "storage": {
++        "s3efb1dfe2": {}
++      }
++    }
++  },
+   "dev": {
+     "awscloudformation": {
+       "AuthRoleName": "amplify-miotav1-dev-230733-authRole",
+@@ -37,26 +58,5 @@
+         "miotav1": {}
+       }
+     }
+-  },
+-  "miota": {
+-    "awscloudformation": {
+-      "AuthRoleName": "amplify-miotav1-miota-152438-authRole",
+-      "UnauthRoleArn": "arn:aws:iam::682756464594:role/amplify-miotav1-miota-152438-unauthRole",
+-      "AuthRoleArn": "arn:aws:iam::682756464594:role/amplify-miotav1-miota-152438-authRole",
+-      "Region": "ap-southeast-1",
+-      "DeploymentBucketName": "amplify-miotav1-miota-152438-deployment",
+-      "UnauthRoleName": "amplify-miotav1-miota-152438-unauthRole",
+-      "StackName": "amplify-miotav1-miota-152438",
+-      "StackId": "arn:aws:cloudformation:ap-southeast-1:682756464594:stack/amplify-miotav1-miota-152438/b5848090-a623-11ee-b8a8-022b58860328",
+-      "AmplifyAppId": "d32d9ib3mjrezq"
+-    },
+-    "categories": {
+-      "auth": {
+-        "miotav1dff86e70": {}
+-      },
+-      "storage": {
+-        "s3efb1dfe2": {}
+-      }
+-    }
+   }
+ }
+\ No newline at end of file

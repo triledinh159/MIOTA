@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -129,8 +130,6 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
 
     //
 
-
-
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -162,7 +161,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         }
 
         //
-        setContentView(R.layout.activity_home_screen);
+        //setContentView(R.layout.activity_home_screen);
         deviceList = new ArrayList<>();
         deviceAdapter = new DeviceAdapter(this, deviceList);
         ImgBg = (ImageView) findViewById(R.id.bgimage);
@@ -341,6 +340,10 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
 
     @Override
     public void onBackPressed() {
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerLayout.closeDrawer(GravityCompat.START);
+        }
+
         if (doubleBackToExitPressedOnce) {
             finishAndRestartApp(); // Modified: finish the activity and restart the app
             return;
@@ -371,6 +374,25 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        return false;
+        int id = item.getItemId();
+        if (id == R.id.nav_home) {
+            if (mCurrentLayout != LAYOUT_HOME) {
+                setContentView(R.layout.activity_home_screen);
+                mCurrentLayout = LAYOUT_HOME;
+            }
+        } else if (id == R.id.nav_guide) {
+
+        } else if (id == R.id.nav_about) {
+
+        } else if (id == R.id.nav_logout) {
+//            if (mCurrentFragment != FRAGMENT_LOGOUT) {
+//                replaceFragment(new LogoutFragment());
+//                mCurrentFragment = FRAGMENT_LOGOUT;
+//            }
+            signOut();
+//            finish();
+        }
+        mDrawerLayout.closeDrawer(GravityCompat.START);
+        return true;
     }
 }

@@ -8,13 +8,13 @@
 
     <ImageView
         android:id="@+id/bgimage"
-        android:layout_width="336dp"
-        android:layout_height="500dp"
+        android:layout_width="404dp"
+        android:layout_height="551dp"
+        android:src="@drawable/background_01_2"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@drawable/background_01_2" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/home"
@@ -64,8 +64,8 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycleList"
-                android:layout_width="342dp"
-                android:layout_height="433dp"
+                android:layout_width="392dp"
+                android:layout_height="494dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

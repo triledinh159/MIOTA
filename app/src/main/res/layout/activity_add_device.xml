@@ -20,51 +20,15 @@
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/background_01_2" />
 
-        <FrameLayout
-            android:id="@+id/frameLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
-
-                <TextView
-                    android:id="@+id/addDevice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="38dp"
-                    android:fontFamily="@font/inter_bold"
-                    android:gravity="center_horizontal|top"
-                    android:lineSpacingExtra="9sp"
-                    android:text="ADD DEVICE"
-                    android:textColor="@color/bluefont"
-                    android:textSize="24sp"
-                    android:translationY="-4.68sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.498"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.023" />
-
-                <Button
-                    android:id="@+id/btnconfirm"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="164dp"
-                    android:text="Confirm"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.897"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/home"
-                    app:layout_constraintVertical_bias="0.722" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     tools:layout_editor_absoluteX="0dp"
-                    tools:layout_editor_absoluteY="0dp">
+                    tools:layout_editor_absoluteY="16dp">
 
                     <androidx.cardview.widget.CardView
                         android:id="@+id/cardView"
@@ -79,7 +43,7 @@
                             android:id="@+id/imageView4"
                             android:layout_width="378dp"
                             android:layout_height="match_parent"
-                            tools:srcCompat="@drawable/gradient_rectangle" />
+                            android:src="@drawable/gradient_rectangle" />
 
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:layout_width="match_parent"
@@ -150,6 +114,7 @@
                                 android:backgroundTint="@color/white"
                                 android:ems="10"
                                 android:inputType="text"
+                                android:textColor="@color/white"
                                 app:layout_constraintBottom_toBottomOf="@+id/Device"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintStart_toEndOf="@+id/Device"
@@ -160,6 +125,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:backgroundTint="@color/white"
+                                android:textColor="@color/white"
                                 android:ems="10"
                                 android:inputType="text"
                                 app:layout_constraintBottom_toBottomOf="@+id/topic"
@@ -172,6 +138,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:backgroundTint="@color/white"
+                                android:textColor="@color/white"
                                 android:ems="10"
                                 android:inputType="text"
                                 app:layout_constraintBottom_toBottomOf="@+id/name"
@@ -183,8 +150,13 @@
                                 android:id="@+id/control"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:button="@null"
+                                android:checked="false"
+                                android:drawableRight="@drawable/checkbox"
+                                android:fontFamily="@font/inter_bold"
                                 android:text="Control"
-                                android:textColor="@color/lightblue"
+                                android:textColor="#FFFFFF"
+                                android:textSize="20sp"
                                 app:layout_constraintBottom_toBottomOf="@+id/typeDevice"
                                 app:layout_constraintEnd_toEndOf="@+id/getDevice"
                                 app:layout_constraintHorizontal_bias="0.0"
@@ -196,9 +168,13 @@
                                 android:id="@+id/data"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginEnd="24dp"
-                                android:text="Data"
-                                android:textColor="@color/lightblue"
+                                android:button="@null"
+                                android:checked="false"
+                                android:drawableRight="@drawable/checkbox"
+                                android:fontFamily="@font/inter_bold"
+                                android:text="Collect"
+                                android:textColor="#FFFFFF"
+                                android:textSize="20sp"
                                 app:layout_constraintBottom_toBottomOf="@+id/control"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintStart_toEndOf="@+id/control"
@@ -209,25 +185,37 @@
 
                     </androidx.cardview.widget.CardView>
 
+                    <Button
+                        android:id="@+id/btnconfirm"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="136dp"
+                        android:text="Confirm"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.91"
+                        app:layout_constraintStart_toStartOf="parent" />
+
+                    <TextView
+                        android:id="@+id/addDevice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="38dp"
+                        android:layout_marginTop="32dp"
+                        android:fontFamily="@font/inter_bold"
+                        android:gravity="center_horizontal|top"
+                        android:lineSpacingExtra="9sp"
+                        android:text="ADD DEVICE"
+                        android:textColor="@color/bluefont"
+                        android:textSize="24sp"
+                        android:translationY="-4.68sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-        </FrameLayout>
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
-
-        </FrameLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
