@@ -74,10 +74,10 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/nameAtHome"
-                app:layout_constraintHorizontal_bias="0.504"
+                app:layout_constraintHorizontal_bias="0.56"
                 app:layout_constraintStart_toStartOf="@+id/nameAtHome"
                 app:layout_constraintTop_toBottomOf="@+id/nameAtHome"
-                app:layout_constraintVertical_bias="0.177"
+                app:layout_constraintVertical_bias="0.301"
                 app:srcCompat="@drawable/temp" />
 
             <ImageView
@@ -123,15 +123,16 @@
                 app:layout_constraintStart_toStartOf="@+id/button"
                 app:layout_constraintTop_toTopOf="@+id/button" />
 
-            <Switch
-                android:id="@+id/sw_control"
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/mySwitch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="false"
                 android:padding="10dp"
-                android:theme="@style/mySwitch"
-                android:thumb="@drawable/thumb_selector"
-                android:track="@drawable/track_selector"
+                app:thumbTint="@null"
+                app:trackTint="@null"
+                android:thumb="@drawable/thumb"
+                app:track="@drawable/track"
                 app:layout_constraintBottom_toBottomOf="@id/img_box"
                 app:layout_constraintEnd_toEndOf="@id/img_box"
                 app:layout_constraintHorizontal_bias="0.195"

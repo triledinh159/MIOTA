@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -103,6 +104,9 @@ class MqttMessageReceiver extends AsyncTask<Void, String, Void> {
 
 public class Home extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private static final int LAYOUT_HOME = 0;
+//    private static final int FRAGMENT_GUIDE = 1;
+//    private static final int FRAGMENT_ABOUT = 2;
+//    private static final int FRAGMENT_LOGOUT = 3;
     private String host, username, password, topic;
     private Mqtt5BlockingClient mqttClient;
     private TextView tvReceivedMessage;
@@ -371,6 +375,25 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        return false;
+        int id = item.getItemId();
+        if (id == R.id.nav_home) {
+            if (mCurrentLayout != LAYOUT_HOME) {
+                setContentView(R.layout.activity_home_screen);
+                mCurrentLayout = LAYOUT_HOME;
+            }
+        } else if (id == R.id.nav_guide) {
+
+        } else if (id == R.id.nav_about) {
+
+        } else if (id == R.id.nav_logout) {
+//            if (mCurrentFragment != FRAGMENT_LOGOUT) {
+//                replaceFragment(new LogoutFragment());
+//                mCurrentFragment = FRAGMENT_LOGOUT;
+//            }
+            signOut();
+//            finish();
+        }
+        mDrawerLayout.closeDrawer(GravityCompat.START);
+        return true;
     }
 }
