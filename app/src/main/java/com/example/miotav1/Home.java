@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -136,6 +137,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -154,21 +156,30 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
 
         tvReceivedMessage = findViewById(R.id.tvReceivedMessage);
 
+        showProgressDialog();
+
+
         try{
             getInfo();
         } catch (Exception e){
             Log.e("mqtt-tri", "errrrrrrrrr");
+            dismissProgressDialog();
         }
+
 
         //
         //setContentView(R.layout.activity_home_screen);
         deviceList = new ArrayList<>();
+       // if (deviceList != null) dismissProgressDialog(); // Đóng progress bar
         deviceAdapter = new DeviceAdapter(this, deviceList);
         ImgBg = (ImageView) findViewById(R.id.bgimage);
         rcv_listDevice = (RecyclerView) findViewById(R.id.recycleList);
         rcv_listDevice.setLayoutManager(new LinearLayoutManager(this));
         rcv_listDevice.setAdapter(deviceAdapter);
         btnAdd = (Button) findViewById(R.id.addButton);
+
+       // dismissProgressDialog(); // Đóng progress bar
+
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -176,7 +187,23 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
                 startActivityForResult(intent, REQUEST_CODE_ADD_ITEM);
             }
         });
+
     }
+    private ProgressDialog progressDialog;
+
+    private void showProgressDialog() {
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("LOADING...");
+        progressDialog.setCancelable(false); // Ngăn chặn việc đóng progress bar khi chạm vào màn hình
+        progressDialog.show();
+    }
+
+    private void dismissProgressDialog() {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data){
@@ -207,6 +234,8 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
                             String jsonString = FileUtils.readFileToString(result.getFile(), StandardCharsets.UTF_8);
                             processConfig(jsonString);
                             Log.d("mqtt-tri", "read" + jsonString);
+                            dismissProgressDialog();
+
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         }
@@ -217,6 +246,8 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
             );
         } catch(Exception error) {
             Log.e("MyAmplifyApp", "Download Failure", error);
+            dismissProgressDialog();
+
         }
     }
     private void processConfig(String jsonString) {
