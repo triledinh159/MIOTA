@@ -35,8 +35,8 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.DeviceHold
     }
 
     class DeviceHolder extends RecyclerView.ViewHolder {
-        TextView tvName, tvDevice;
-        ImageView Imgbx, Imgconnect, ImgTemp, ImgHum;
+        TextView tvName, tvDevice, tvDevice_statistic;
+        ImageView Imgbx, Imgconnect;
         Switch swControl;
 
         Button btnDelete;
@@ -48,8 +48,7 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.DeviceHold
             tvDevice = itemView.findViewById(R.id.nameDevice);
             Imgbx = itemView.findViewById(R.id.img_box);
             Imgconnect = itemView.findViewById(R.id.Img_connect);
-            ImgHum = itemView.findViewById(R.id.ImgHum);
-            ImgTemp = itemView.findViewById(R.id.TempImg);
+            tvDevice_statistic = itemView.findViewById(R.id.device_static);
             swControl = itemView.findViewById(R.id.sw_control);
             llparent = itemView.findViewById(R.id.item_device);
             btnDelete = itemView.findViewById(R.id.button);
@@ -114,8 +113,7 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.DeviceHold
             holder.tvDevice.setText(TextUtils.isEmpty(device.getDevice()) ? "" : device.getDevice());
 
             // Check data or control device data -> 1, control -> 0
-            holder.ImgTemp.setVisibility(device.TypeDevice() == 1 ? View.GONE : View.VISIBLE);
-            holder.ImgHum.setVisibility(device.TypeDevice() == 1 ? View.GONE : View.VISIBLE);
+            holder.tvDevice_statistic.setVisibility(device.TypeDevice() == 1? View.GONE : View.VISIBLE);
             holder.swControl.setVisibility(device.TypeDevice() == 1 ? View.VISIBLE : View.GONE);
         }
         holder.btnDelete.setTag(position);
