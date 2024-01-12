@@ -52,6 +52,7 @@ public class Login extends AppCompatActivity {
     private void onLoginError(AuthException e) {
         this.runOnUiThread(() ->{
             Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+            dismissProgressDialog(); // Đóng progress bar
         });
     }
 
