@@ -10,9 +10,8 @@ public class Device implements Serializable {
     private String device, topic, name;
     int type;
 
-    public Device(String typeDevice, String device, String topic, String name){}
-    public Device( int type, String device, String topic, String name){
-        this.type = type;
+    public Device(String type, String device, String topic, String name){
+        this.type = Integer.parseInt(type);
         this.device = device;
         this.topic = topic;
         this.name = name;
