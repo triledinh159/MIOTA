@@ -65,6 +65,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
+import kotlinx.coroutines.Delay;
 
 
 class MqttMessageReceiver extends AsyncTask<Void, String, Void> {
@@ -173,14 +174,14 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
 
         tvReceivedMessage = findViewById(R.id.tvReceivedMessage);
 
-        showProgressDialog();
+        btnAdd = (Button) findViewById(R.id.addButton);
+
 
         try{
             getInfo();
         } catch (Exception e){
             Log.e("mqtt-tri", "errrrrrrrrr");
         }
-
         //
         //setContentView(R.layout.activity_home_screen);
         deviceList = new ArrayList<>();
@@ -190,6 +191,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         rcv_listDevice.setLayoutManager(new LinearLayoutManager(this));
         rcv_listDevice.setAdapter(deviceAdapter);
         btnAdd = (Button) findViewById(R.id.addButton);
+
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -197,6 +199,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
                 startActivityForResult(intent, REQUEST_CODE_ADD_ITEM);
             }
         });
+
     }
 
     @Override
@@ -216,6 +219,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
     private void getInfo() throws InterruptedException {
         try {
 
+
             File exampleFile = new File(getApplicationContext().getFilesDir(), "user.json");
             Amplify.Storage.downloadFile(
                     "user.json",
@@ -226,11 +230,10 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
                             String jsonString = FileUtils.readFileToString(result.getFile(), StandardCharsets.UTF_8);
                             processConfig(jsonString);
                             Log.d("mqtt-tri", "read" + jsonString);
-                            dismissProgressDialog();
+
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         }
-
 
                     },
                     error -> Log.e("MyAmplifyApp",  "Download Failure", error)
@@ -244,7 +247,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
     private void showProgressDialog() {
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("LOADING ....");
-        progressDialog.setCancelable(false); // Ngăn chặn việc đóng progress bar khi chạm vào màn hình
+        progressDialog.setCancelable(true); // Ngăn chặn việc đóng progress bar khi chạm vào màn hình
         progressDialog.show();
     }
 

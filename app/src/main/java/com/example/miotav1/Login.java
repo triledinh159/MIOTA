@@ -71,7 +71,7 @@ public class Login extends AppCompatActivity {
     }
 
     private void onLoginSucces(AuthSignInResult authSignInResult) {
-        Intent intent = new Intent(this, Home.class);
+        Intent intent = new Intent(Login.this, Home.class);
         startActivity(intent);
     }
 
