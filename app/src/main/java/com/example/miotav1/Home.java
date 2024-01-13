@@ -177,7 +177,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         }
 
         //
-        setContentView(R.layout.activity_home_screen);
+        //setContentView(R.layout.activity_home_screen);
         deviceList = new ArrayList<>();
         deviceAdapter = new DeviceAdapter(this, deviceList);
         ImgBg = (ImageView) findViewById(R.id.bgimage);

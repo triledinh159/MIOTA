@@ -21,11 +21,4 @@
         android:layout_marginTop="8dp"
         />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="triledinh159@gmail.com"
-        android:textSize="24dp"
-        android:textColor="@color/white" />
-
 </LinearLayout>

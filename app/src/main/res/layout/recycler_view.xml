@@ -29,7 +29,7 @@
                 app:layout_constraintHorizontal_bias="0.208"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:srcCompat="@drawable/gradient_rectangle" />
+                android:src="@drawable/gradient_rectangle" />
 
             <TextView
                 android:id="@+id/nameAtHome"
@@ -105,25 +105,23 @@
                 android:id="@+id/sw_control"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:checked="false"
-                android:padding="10dp"
-                android:theme="@style/mySwitch"
-                android:thumb="@drawable/thumb_selector"
-                android:track="@drawable/track_selector"
+                app:thumbTint="@null"
+                app:trackTint="@null"
+                android:thumb="@drawable/thumb"
+                app:track="@drawable/track"
                 app:layout_constraintBottom_toBottomOf="@id/img_box"
-                app:layout_constraintEnd_toEndOf="@+id/nameAtHome"
-                app:layout_constraintHorizontal_bias="0.493"
-                app:layout_constraintStart_toStartOf="@+id/nameAtHome"
+                app:layout_constraintEnd_toEndOf="@id/img_box"
+                app:layout_constraintHorizontal_bias="0.195"
+                app:layout_constraintStart_toStartOf="@id/img_box"
                 app:layout_constraintTop_toTopOf="@id/img_box"
-                app:layout_constraintVertical_bias="0.786" />
-
+                app:layout_constraintVertical_bias="0.717" />
             <TextView
                 android:id="@+id/device_static"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="N/A"
-                android:textColor="@color/black"
-                android:textSize="25sp"
+                android:textColor="@color/white"
+                android:textSize="20sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/nameAtHome"
                 app:layout_constraintStart_toStartOf="@+id/nameAtHome"
