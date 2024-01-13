@@ -71,9 +71,7 @@ class MqttMessageReceiver extends AsyncTask<Void, String, Void> {
     private DeviceAdapter deviceAdapter;
     public ArrayList<Device> deviceList;
 
-
-
-    MqttMessageReceiver(Mqtt5BlockingClient mqttClient, DeviceAdapter deviceAdapter, ArrayList<Device>deviceList) {
+    MqttMessageReceiver(Mqtt5BlockingClient mqttClient, DeviceAdapter deviceAdapter, ArrayList<Device> deviceList) {
         this.mqttClient = mqttClient;
         this.deviceAdapter = deviceAdapter;
         this.deviceList = deviceList;
@@ -82,7 +80,7 @@ class MqttMessageReceiver extends AsyncTask<Void, String, Void> {
     @Override
     protected Void doInBackground(Void... params) {
         try (final Mqtt5BlockingClient.Mqtt5Publishes publishes = mqttClient.publishes(MqttGlobalPublishFilter.ALL)) {
-            while (true) {
+            while (!isCancelled()) {  // Check if the task is cancelled
                 Optional<Mqtt5Publish> message = publishes.receive(10, TimeUnit.SECONDS);
                 if (message.isPresent()) {
                     String receivedMessage = new String(message.get().getPayloadAsBytes(), UTF_8);
@@ -93,16 +91,13 @@ class MqttMessageReceiver extends AsyncTask<Void, String, Void> {
                         Log.d("mqtt-tri_SIZELIST", String.valueOf(deviceList.size()));
                         Log.d("mqtt-triGETNAMEDIVICE", device.getName());
                         if (device.getTopic().equals(topic)) {
-                            //Log.d("mqtt-triReceive", receivedMessage);
+                            publishProgress(receivedMessage);  // Trigger onProgressUpdate
                             device.updateStatisticValue(receivedMessage);
-                            //Log.d("mqtt-tri234", device + topic + receivedMessage);
-                            // Update the topic variable here based on the current message's topic
                         }
                     }
                 } else {
                     Log.d("mqtt-tri", "No message received within the specified time.");
                 }
-
             }
         } catch (Exception e) {
             Log.e("mqtt-tri", "Error receiving message: " + e.getMessage());
@@ -110,13 +105,16 @@ class MqttMessageReceiver extends AsyncTask<Void, String, Void> {
         return null;
     }
 
-
     @Override
     protected void onProgressUpdate(String... values) {
         // Update UI on the main thread
-        deviceAdapter.notifyDataSetChanged();
+        for (String receivedMessage : values) {
+            Log.d("mqtt-triReceive", receivedMessage);
+            deviceAdapter.notifyDataSetChanged();
+        }
     }
 }
+
 
 public class Home extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private static final int LAYOUT_HOME = 0;

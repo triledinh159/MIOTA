@@ -1,6 +1,3 @@
-//
-// Hàm Device để tạo kiểu dữ liệu Device để lấy các thông số từ add_item và đưa qua RecyclerView
-//
 package com.example.miotav1;
 
 import android.util.Log;
