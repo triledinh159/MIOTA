@@ -256,10 +256,10 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
                 deviceAdapter.notifyDataSetChanged();
 
 
-                subscribeToTopics(deviceList, topics);
+
 
             }
-
+            subscribeToTopics(deviceList, topics);
 
 
         } catch (JSONException e) {
