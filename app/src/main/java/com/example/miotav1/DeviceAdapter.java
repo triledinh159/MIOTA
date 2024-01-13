@@ -1,5 +1,6 @@
 package com.example.miotav1;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
@@ -35,6 +36,7 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.DeviceHold
 
     private int tempPosition;
 
+    private static final int REQUEST_CODE_DETAIL = 1;
     public DeviceAdapter(Context context, List<Device> mListDevice) {
         this.context = context;
         this.mListDevice = mListDevice;
@@ -116,8 +118,10 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.DeviceHold
                     Intent intent = new Intent(context, Detail_device_click_on.class);
                     // Pass data if needed
                     // intent.putExtra("device_id", clickedDevice.getID());
-                    context.startActivity(intent);
-                }
+                    intent.putExtra("name", clickedDevice.getName());
+                    intent.putExtra("device", clickedDevice.getDevice());
+                    intent.putExtra("topic", clickedDevice.getTopic());
+                    ((Activity) context).startActivityForResult(intent, REQUEST_CODE_DETAIL);            }
             }
         });
 
@@ -137,6 +141,20 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.DeviceHold
             holder.swControl.setVisibility(device.TypeDevice() == 1 ? View.VISIBLE : View.GONE);
             holder.tvDeviceStatistic.setText(device.getStatisticValue());
         }
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Create an intent to start Detail_device_click_on activity
+                Intent intent = new Intent(context, Detail_device_click_on.class);
+
+                // Pass data to the intent
+                intent.putExtra("name", device.getName());
+                intent.putExtra("device", device.getDevice());
+                intent.putExtra("topic", device.getTopic());
+                intent.putExtra("statistic", device.getStatistic());
+                // Start the activity
+                ((Activity) context).startActivityForResult(intent, REQUEST_CODE_DETAIL);            }
+        });
         holder.btnDelete.setTag(position);
     }
 

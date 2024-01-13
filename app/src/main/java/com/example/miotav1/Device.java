@@ -44,5 +44,8 @@ public class Device implements Serializable {
         Log.d("mqtt-tri3", "updateStatisticValue: " + newValue);
         this.statisticValue = newValue;
     }
+    public String getStatistic(){
+        return statisticValue;
+    }
 }
 
