@@ -59,28 +59,6 @@
                 app:layout_constraintTop_toTopOf="@+id/nameAtHome" />
 
             <ImageView
-                android:id="@+id/ImgHum"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@+id/TempImg"
-                app:layout_constraintStart_toStartOf="@+id/TempImg"
-                app:layout_constraintTop_toBottomOf="@+id/TempImg"
-                app:srcCompat="@drawable/hum" />
-
-            <ImageView
-                android:id="@+id/TempImg"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@+id/nameAtHome"
-                app:layout_constraintHorizontal_bias="0.504"
-                app:layout_constraintStart_toStartOf="@+id/nameAtHome"
-                app:layout_constraintTop_toBottomOf="@+id/nameAtHome"
-                app:layout_constraintVertical_bias="0.177"
-                app:srcCompat="@drawable/temp" />
-
-            <ImageView
                 android:id="@+id/Img_connect"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -133,11 +111,24 @@
                 android:thumb="@drawable/thumb_selector"
                 android:track="@drawable/track_selector"
                 app:layout_constraintBottom_toBottomOf="@id/img_box"
-                app:layout_constraintEnd_toEndOf="@id/img_box"
-                app:layout_constraintHorizontal_bias="0.195"
-                app:layout_constraintStart_toStartOf="@id/img_box"
+                app:layout_constraintEnd_toEndOf="@+id/nameAtHome"
+                app:layout_constraintHorizontal_bias="0.493"
+                app:layout_constraintStart_toStartOf="@+id/nameAtHome"
                 app:layout_constraintTop_toTopOf="@id/img_box"
-                app:layout_constraintVertical_bias="0.717" />
+                app:layout_constraintVertical_bias="0.786" />
+
+            <TextView
+                android:id="@+id/device_static"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="N/A"
+                android:textColor="@color/black"
+                android:textSize="25sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/nameAtHome"
+                app:layout_constraintStart_toStartOf="@+id/nameAtHome"
+                app:layout_constraintTop_toTopOf="@+id/img_box"
+                app:layout_constraintVertical_bias="0.737" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 </LinearLayout>

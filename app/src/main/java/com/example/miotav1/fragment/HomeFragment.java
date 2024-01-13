@@ -1,4 +1,4 @@
-package drawable.fragment;
+package com.example.miotav1.fragment;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

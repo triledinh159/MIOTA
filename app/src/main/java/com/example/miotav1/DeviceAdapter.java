@@ -33,10 +33,14 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.DeviceHold
     private Context context;
     private List<Device> mListDevice;
 
+    private int tempPosition;
+
     public DeviceAdapter(Context context, List<Device> mListDevice) {
         this.context = context;
         this.mListDevice = mListDevice;
     }
+
+
 
     public List<Device> getmListDevice() {
         return mListDevice;
@@ -47,12 +51,14 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.DeviceHold
     }
 
     class DeviceHolder extends RecyclerView.ViewHolder {
-        TextView tvName, tvDevice;
-        ImageView Imgbx, Imgconnect, ImgTemp, ImgHum;
+        TextView tvName, tvDevice, tvDevice_statistic, tvDeviceStatistic;
+
+        ImageView Imgbx, Imgconnect;
         Switch swControl;
 
         Button btnDelete;
         LinearLayout llparent;
+
 
         public DeviceHolder(@NonNull View itemView) {
             super(itemView);
@@ -60,12 +66,11 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.DeviceHold
             tvDevice = itemView.findViewById(R.id.nameDevice);
             Imgbx = itemView.findViewById(R.id.img_box);
             Imgconnect = itemView.findViewById(R.id.Img_connect);
-            ImgHum = itemView.findViewById(R.id.ImgHum);
-            ImgTemp = itemView.findViewById(R.id.TempImg);
+            tvDevice_statistic = itemView.findViewById(R.id.device_static);
             swControl = itemView.findViewById(R.id.sw_control);
             llparent = itemView.findViewById(R.id.item_device);
             btnDelete = itemView.findViewById(R.id.button);
-
+            tvDeviceStatistic = itemView.findViewById(R.id.device_static);
             btnDelete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -86,6 +91,7 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.DeviceHold
     @NonNull
     @Override
     public DeviceHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+
         View view = LayoutInflater.from(context).inflate(R.layout.recycler_view, parent, false);
         DeviceHolder holder = new DeviceHolder(view);
 
@@ -127,9 +133,9 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.DeviceHold
             holder.tvDevice.setText(TextUtils.isEmpty(device.getDevice()) ? "" : device.getDevice());
 
             // Check data or control device data -> 1, control -> 0
-            holder.ImgTemp.setVisibility(device.TypeDevice() == 1 ? View.GONE : View.VISIBLE);
-            holder.ImgHum.setVisibility(device.TypeDevice() == 1 ? View.GONE : View.VISIBLE);
+            holder.tvDevice_statistic.setVisibility(device.TypeDevice() == 1? View.GONE : View.VISIBLE);
             holder.swControl.setVisibility(device.TypeDevice() == 1 ? View.VISIBLE : View.GONE);
+            holder.tvDeviceStatistic.setText(device.getStatisticValue());
         }
         holder.btnDelete.setTag(position);
     }
@@ -190,5 +196,9 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.DeviceHold
     public int getItemCount() {
         return mListDevice.size();
     }
+
+
+    // Add a method to get the DeviceHolder at a given position
+
 }
 
