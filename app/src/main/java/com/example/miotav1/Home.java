@@ -25,6 +25,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.amazonaws.mobile.client.AWSMobileClient;
+import com.amazonaws.mobileconnectors.cognitoauth.Auth;
+import com.amplifyframework.auth.AuthUser;
 import com.amplifyframework.auth.cognito.result.AWSCognitoAuthSignOutResult;
 import com.amplifyframework.auth.cognito.result.GlobalSignOutError;
 import com.amplifyframework.auth.cognito.result.HostedUIError;
@@ -140,6 +143,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
 
     Device added_device;
 
+    String Username;
     private static final int REQUEST_CODE_ADD_ITEM = 1;
 
     //
@@ -166,15 +170,29 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         FrameLayout frameLayout = findViewById(R.id.content_frame);
         frameLayout.removeAllViews();  // Xóa tất cả các views hiện tại trong FrameLayout
         View inflatedView = getLayoutInflater().inflate(R.layout.activity_home_screen, frameLayout, true);
-
-
-        tvReceivedMessage = findViewById(R.id.tvReceivedMessage);
-
+        View headerView = navigationView.getHeaderView(0);
+        TextView navUsername = (TextView) headerView.findViewById(R.id.tvUsername);
         try{
-            getInfo();
+            Amplify.Auth.getCurrentUser(
+                    result -> {
+                        // Successful authentication, start Home activity
+                        Username = result.getUsername();
+                        Log.d("mqtt-triUSERNAME", "username: " + username);
+                        navUsername.setText(Username);
+                        try {
+                            getInfo(Username);
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }, error -> {
+                        // Authentication error, start Login activity
+                        Log.d("mqtt-tri", "error: " + error);
+                    });
+
         } catch (Exception e){
             Log.e("mqtt-tri", "errrrrrrrrr");
         }
+
 
         //
         //setContentView(R.layout.activity_home_screen);
@@ -208,15 +226,17 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
 
 
 
-    private void getInfo() throws InterruptedException {
-        try {
+    private void getInfo(String Username) throws InterruptedException {
 
-            File exampleFile = new File(getApplicationContext().getFilesDir(), "user.json");
+        try {
+            String JsonFileName = Username + ".json";
+            Log.d("mqtt-triJsonFileName", "JsonFileName: " + JsonFileName);
+            File exampleFile = new File(getApplicationContext().getFilesDir(), JsonFileName);
             Amplify.Storage.downloadFile(
-                    "user.json",
+                    JsonFileName,
                     exampleFile,
                     result -> {
-                        Log.i("MyAmplifyApp", "Successfully downloaded: " + result.getFile().getName());
+                        Log.i("mqtt-tri", "Successfully downloaded: " + result.getFile().getName());
                         try {
                             String jsonString = FileUtils.readFileToString(result.getFile(), StandardCharsets.UTF_8);
                             processConfig(jsonString);
@@ -227,10 +247,10 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
 
 
                     },
-                    error -> Log.e("MyAmplifyApp",  "Download Failure", error)
+                    error -> Log.e("mqtt-tri",  "Download Failure", error)
             );
         } catch(Exception error) {
-            Log.e("MyAmplifyApp", "Download Failure", error);
+            Log.e("mqtt-tri", "Download Failure", error);
         }
     }
     private void processConfig(String jsonString) {
