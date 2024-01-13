@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <TextView
+        android:id="@+id/about"
+        android:layout_width="164dp"
+        android:layout_height="39dp"
+        android:layout_marginTop="40dp"
+        android:fontFamily="@font/inter_bold"
+        android:gravity="center_horizontal|top"
+        android:lineSpacingExtra="9sp"
+        android:text="ABOUT US"
+        android:textColor="@color/bluefont"
+        android:textSize="24sp"
+        android:translationY="-4.68sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:layout_width="384dp"
+        android:layout_height="604dp"
+        android:fontFamily="@font/inter_bold"
+        android:text="Ứng dụng MIOTA được phát triển bởi một đội nhóm gồm 4 thành viên sau:\n
+- Lê Đình Trí: Trưởng nhóm, người lập trình chính cho ứng dụng\n
+- Trần Thanh Tú: Thành viên, người thiết kế giao diện cho ứng dụng\n
+- Lê Hoàng Tú: Thành viên, người xử lý những logic liên quan đến giao diện\n
+- Đinh Minh Tuấn: Thành viên, người chịu trách nhiệm chính về sử dụng cloud và MQTT cho ứng dụng\n\n
+Ứng dụng đã đưa ra được giải pháp để xử lý được vấn đề mà nhóm đã đặt ra đó là về một ứng dụng phục vụ cho một ngôi nhà thông minh,
+sử dụng các kiến thức về IoT với giao thức MQTT, các dịch vụ trên cloud và những kiến thức nhóm đã học ở môn Phát triển ứng dụng trên thiết bị di động.
+Tuy nhiên, ứng dụng chỉ hoàn thành ở mức đồ án môn học. Vì thề ứng dụng này có thể được cải tiến và phát triển hơn trong tương lai."
+        app:layout_constraintHorizontal_bias="0.5"
+        android:gravity="center_horizontal"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/about" />
+</androidx.constraintlayout.widget.ConstraintLayout>

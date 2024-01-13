@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,6 +17,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -68,23 +70,33 @@ import java.util.concurrent.TimeUnit;
 class MqttMessageReceiver extends AsyncTask<Void, String, Void> {
 
     private Mqtt5BlockingClient mqttClient;
-    private TextView tvReceivedMessage;
+    private DeviceAdapter deviceAdapter;
+    public ArrayList<Device> deviceList;
 
-    MqttMessageReceiver(Mqtt5BlockingClient mqttClient, TextView tvReceivedMessage) {
+    MqttMessageReceiver(Mqtt5BlockingClient mqttClient, DeviceAdapter deviceAdapter, ArrayList<Device> deviceList) {
         this.mqttClient = mqttClient;
-        this.tvReceivedMessage = tvReceivedMessage;
+        this.deviceAdapter = deviceAdapter;
+        this.deviceList = deviceList;
     }
 
     @Override
     protected Void doInBackground(Void... params) {
         try (final Mqtt5BlockingClient.Mqtt5Publishes publishes = mqttClient.publishes(MqttGlobalPublishFilter.ALL)) {
-            while (true) {
+            while (!isCancelled()) {  // Check if the task is cancelled
                 Optional<Mqtt5Publish> message = publishes.receive(10, TimeUnit.SECONDS);
-
                 if (message.isPresent()) {
                     String receivedMessage = new String(message.get().getPayloadAsBytes(), UTF_8);
-                    Log.d("mqtt-tri", "Received message: " + receivedMessage);
-                    publishProgress(receivedMessage);
+                    String topic = message.get().getTopic().toString();
+
+                    for (int i = 0; i < deviceList.size(); i++) {
+                        Device device = deviceList.get(i);
+                        Log.d("mqtt-tri_SIZELIST", String.valueOf(deviceList.size()));
+                        Log.d("mqtt-triGETNAMEDIVICE", device.getName());
+                        if (device.getTopic().equals(topic)) {
+                            publishProgress(receivedMessage);  // Trigger onProgressUpdate
+                            device.updateStatisticValue(receivedMessage);
+                        }
+                    }
                 } else {
                     Log.d("mqtt-tri", "No message received within the specified time.");
                 }
@@ -98,12 +110,17 @@ class MqttMessageReceiver extends AsyncTask<Void, String, Void> {
     @Override
     protected void onProgressUpdate(String... values) {
         // Update UI on the main thread
-        tvReceivedMessage.setText(values[0]);
+        for (String receivedMessage : values) {
+            Log.d("mqtt-triReceive", receivedMessage);
+            deviceAdapter.notifyDataSetChanged();
+        }
     }
 }
 
+
 public class Home extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private static final int LAYOUT_HOME = 0;
+    private static final int LAYOUT_ABOUT = 2;
     private String host, username, password, topic;
     private Mqtt5BlockingClient mqttClient;
     private TextView tvReceivedMessage;
@@ -165,7 +182,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         }
 
         //
-        setContentView(R.layout.activity_home_screen);
+        //setContentView(R.layout.activity_home_screen);
         deviceList = new ArrayList<>();
         deviceAdapter = new DeviceAdapter(this, deviceList);
         ImgBg = (ImageView) findViewById(R.id.bgimage);
@@ -187,16 +204,14 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_ADD_ITEM && data != null) {
             Device newDevice = (Device) data.getSerializableExtra("new_Device");
-//            String name = newDevice.getName();
-//            String topic = newDevice.getTopic();
-//            int type = newDevice.TypeDevice();
-//            String device = newDevice.getDevice();
-//            Device addDevice = new Device(type, device, topic, name);topic
             added_device = newDevice;
             deviceList.add(newDevice);
             deviceAdapter.notifyDataSetChanged();
+            //subscribeToTopics(deviceList, );
         }
     }
+
+
 
     private void getInfo() throws InterruptedException {
         try {
@@ -253,18 +268,23 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
                 String device = (deviceObject.isNull("device")) ? "" : deviceObject.getString("device");
                 String name = (deviceObject.isNull("name")) ? "" : deviceObject.getString("name");
                 Device newDevice = new Device(typeDevice,device, topic, name);
+
                 deviceList.add(newDevice);
+
                 deviceAdapter.notifyDataSetChanged();
 
-            }
 
-            subscribeToTopics(topics);
+
+
+            }
+            subscribeToTopics(deviceList, topics);
+
 
         } catch (JSONException e) {
             Log.e("mqtt-tri", "Error parsing JSON: " + e.getMessage());
         }
     }
-    private void subscribeToTopics(List<String> topics) {
+    private void subscribeToTopics(ArrayList<Device> deviceList,List<String> topics) {
         host = "d567f3932ca749f78c9e75dac4e4eab5.s2.eu.hivemq.cloud";
         username = "trild";
         password = "Tri123456";
@@ -297,18 +317,17 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
 
             // Receive messages for all subscribed topics
             try {
-                // Create an instance of MqttMessageReceiver and execute it
-                MqttMessageReceiver mqttMessageReceiver = new MqttMessageReceiver(mqttClient, tvReceivedMessage);
+                MqttMessageReceiver mqttMessageReceiver = new MqttMessageReceiver(mqttClient, deviceAdapter, deviceList);
                 mqttMessageReceiver.execute();
-
+                //device.updateStatisticValue("v4");
                 // The rest of your existing code...
             } catch (Exception e) {
                 Log.e("mqtt-tri", "er=");
             }
-
         } catch (Exception e) {
             Log.e("mqtt-tri", "Error connecting to MQTT broker: " + e.getMessage());
         }
+
     }
     // Method to handle Signout
     private void signOut() {
@@ -389,6 +408,35 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        return false;
+        int id = item.getItemId();
+        if (id == R.id.nav_home) {
+            if (mCurrentLayout != LAYOUT_HOME) {
+                mCurrentLayout = LAYOUT_HOME;
+                Intent newintent = new Intent(Home.this, Home.class);
+                startActivity(newintent);
+            }
+        } else if (id == R.id.nav_guide) {
+            // Handle guide
+        } else if (id == R.id.nav_about) {
+            if (mCurrentLayout != LAYOUT_ABOUT) {
+                setLayout(R.layout.activity_about);
+                mCurrentLayout = LAYOUT_ABOUT;
+            }
+        } else if (id == R.id.nav_logout) {
+            signOut();
+        }
+        mDrawerLayout.closeDrawer(GravityCompat.START);
+        return true;
     }
+
+    private void setLayout(int layoutResId) {
+        FrameLayout frameLayout = findViewById(R.id.content_frame);
+        frameLayout.removeAllViews();
+
+        // Inflate the new layout
+        View inflatedView = getLayoutInflater().inflate(layoutResId, frameLayout, false);
+        frameLayout.addView(inflatedView);
+
+    }
+
 }
