@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.amazonaws.mobile.client.AWSMobileClient;
 import com.amazonaws.mobile.client.Callback;
 import com.amazonaws.mobile.client.results.ForgotPasswordResult;
+import com.amplifyframework.auth.AuthException;
 import com.amplifyframework.core.Amplify;
 
 public class Forgot_password extends AppCompatActivity {
@@ -60,10 +61,32 @@ public class Forgot_password extends AppCompatActivity {
                 username,
                 newPassword,
                 confirmationCode,
-                () -> Log.i("AuthQuickstart", "New password confirmed"),
-                error -> Log.e("AuthQuickstart", error.toString())
+                this::onForgotSuccess,
+                this::onForgotError
         );
     }
+
+    private void onForgotSuccess() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Log.i("AuthQuickstart", "New password confirmed");
+                Toast.makeText(Forgot_password.this, "Changed password", Toast.LENGTH_SHORT).show();
+            }
+        });
+        finish();
+    }
+
+    private void onForgotError(AuthException e) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Log.e("AuthQuickstart", e.toString());
+                Toast.makeText(Forgot_password.this, "Fail", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 
     private void makeToast(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();

@@ -119,6 +119,7 @@ class MqttMessageReceiver extends AsyncTask<Void, String, Void> {
 
 public class Home extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private static final int LAYOUT_HOME = 0;
+    private static final int LAYOUT_ABOUT = 2;
     private String host, username, password, topic;
     private Mqtt5BlockingClient mqttClient;
     private TextView tvReceivedMessage;
@@ -392,22 +393,32 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         int id = item.getItemId();
         if (id == R.id.nav_home) {
             if (mCurrentLayout != LAYOUT_HOME) {
-                setContentView(R.layout.activity_home_screen);
                 mCurrentLayout = LAYOUT_HOME;
+                Intent newintent = new Intent(Home.this, Home.class);
+                startActivity(newintent);
             }
         } else if (id == R.id.nav_guide) {
-
+            // Handle guide
         } else if (id == R.id.nav_about) {
-
+            if (mCurrentLayout != LAYOUT_ABOUT) {
+                setLayout(R.layout.activity_about);
+                mCurrentLayout = LAYOUT_ABOUT;
+            }
         } else if (id == R.id.nav_logout) {
-//            if (mCurrentFragment != FRAGMENT_LOGOUT) {
-//                replaceFragment(new LogoutFragment());
-//                mCurrentFragment = FRAGMENT_LOGOUT;
-//            }
             signOut();
-//            finish();
         }
         mDrawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
+
+    private void setLayout(int layoutResId) {
+        FrameLayout frameLayout = findViewById(R.id.content_frame);
+        frameLayout.removeAllViews();
+
+        // Inflate the new layout
+        View inflatedView = getLayoutInflater().inflate(layoutResId, frameLayout, false);
+        frameLayout.addView(inflatedView);
+
+    }
+
 }
