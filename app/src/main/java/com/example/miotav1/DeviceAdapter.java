@@ -1,5 +1,6 @@
 package com.example.miotav1;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
@@ -35,6 +36,7 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.DeviceHold
 
     private int tempPosition;
 
+    private static final int REQUEST_CODE_DETAIL = 1;
     public DeviceAdapter(Context context, List<Device> mListDevice) {
         this.context = context;
         this.mListDevice = mListDevice;
@@ -102,7 +104,22 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.DeviceHold
                 if (position != RecyclerView.NO_POSITION) {
                     Device removedDevice = mListDevice.remove(position);
                     notifyItemRemoved(position);
-                    updateJsonFileAfterDelete(removedDevice);
+                    try{
+                        Amplify.Auth.getCurrentUser(
+                                result -> {
+                                    // Successful authentication, start Home activity
+                                    String Username = result.getUsername();
+                                    Log.d("mqtt-triUSERNAME_toUpload22222", "22username: " + Username);
+                                    updateJsonFileAfterDelete(removedDevice, Username);
+                                }, error -> {
+                                    // Authentication error, start Login activity
+                                    Log.d("mqtt-tri", "error: " + error);
+                                });
+
+                    } catch (Exception e){
+                        Log.e("mqtt-tri", "errrrrrrrrr");
+                    }
+
                 }
             }
         });
@@ -116,8 +133,11 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.DeviceHold
                     Intent intent = new Intent(context, Detail_device_click_on.class);
                     // Pass data if needed
                     // intent.putExtra("device_id", clickedDevice.getID());
-                    context.startActivity(intent);
-                }
+                    intent.putExtra("name", clickedDevice.getName());
+                    intent.putExtra("device", clickedDevice.getDevice());
+                    intent.putExtra("topic", clickedDevice.getTopic());
+                    intent.putExtra("statistic", clickedDevice.getStatistic());
+                    ((Activity) context).startActivityForResult(intent, REQUEST_CODE_DETAIL);            }
             }
         });
 
@@ -137,12 +157,29 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.DeviceHold
             holder.swControl.setVisibility(device.TypeDevice() == 1 ? View.VISIBLE : View.GONE);
             holder.tvDeviceStatistic.setText(device.getStatisticValue());
         }
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int position = holder.getAdapterPosition();
+                if (position != RecyclerView.NO_POSITION) {
+                    Device clickedDevice = mListDevice.get(position);
+                    Intent intent = new Intent(context, Detail_device_click_on.class);
+                    intent.putExtra("name", clickedDevice.getName());
+                    intent.putExtra("device", clickedDevice.getDevice());
+                    intent.putExtra("topic", clickedDevice.getTopic());
+                    intent.putExtra("statistic", clickedDevice.getStatistic());
+                    intent.putExtra("position", position); // Pass the position
+                    ((Activity) context).startActivityForResult(intent, REQUEST_CODE_DETAIL);
+                }
+            }
+        });
         holder.btnDelete.setTag(position);
     }
 
-    private void updateJsonFileAfterDelete(Device removedDevice) {
-        File file = new File(context.getFilesDir(), "user.json");
-
+    private void updateJsonFileAfterDelete(Device removedDevice, String Username) {
+        String key = Username + ".json";
+        File file = new File(context.getFilesDir(), key);
+        Log.d("mqtt-triJsonFileName22222", "JsonFi22222leName: " + key);
         // Read existing JSON content from the file
         StringBuilder jsonContent = new StringBuilder();
 
@@ -175,17 +212,17 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.DeviceHold
             FileWriter writer = new FileWriter(file);
             writer.write(jsonData.toString());
             writer.close();
-            uploadFileToS3();
+            uploadFileToS3(key);
 
         } catch (JSONException | IOException e) {
             e.printStackTrace();
         }
     }
-    private void uploadFileToS3() {
-        File file = new File(context.getFilesDir(), "user.json");
+    private void uploadFileToS3(String key) {
+        File file = new File(context.getFilesDir(), key);
 
         Amplify.Storage.uploadFile(
-                "user.json",
+                key,
                 file,
                 result -> Log.i("MyAmplifyApp", "Successfully uploaded: " + result.getKey()),
                 error -> Log.e("MyAmplifyApp", "Upload failed", error)

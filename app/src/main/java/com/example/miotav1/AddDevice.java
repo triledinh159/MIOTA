@@ -43,7 +43,21 @@ public class AddDevice extends AppCompatActivity {
                 String topic = getTopic.getText().toString();
                 String name = getName.getText().toString();
                 Device newDevice = new Device(String.valueOf(typeDevice),device, topic, name);
-                updateJsonFile(newDevice);
+                try{
+                    Amplify.Auth.getCurrentUser(
+                            result -> {
+                                // Successful authentication, start Home activity
+                                String Username = result.getUsername();
+                                Log.d("mqtt-triUSERN111111AME_toUpload", "userna111111me: " + Username);
+                                updateJsonFile(newDevice, Username);
+                            }, error -> {
+                                // Authentication error, start Login activity
+                                Log.d("mqtt-tri", "error: " + error);
+                            });
+
+                } catch (Exception e){
+                    Log.e("mqtt-tri", "errrrrrrrrr");
+                }
                 //Trả về newDevice thông qua Intent
                 Intent resultIntent = new Intent();
                 resultIntent.putExtra("new_Device", newDevice);
@@ -54,11 +68,12 @@ public class AddDevice extends AppCompatActivity {
             }
         });
     }
-    private void updateJsonFile(Device newDevice) {
+    private void updateJsonFile(Device newDevice, String Username) {
+        String key = Username + ".json";
         // Read existing JSON content from the file
-        File file = new File(getFilesDir(), "user.json");
+        File file = new File(getFilesDir(), key);
         StringBuilder jsonContent = new StringBuilder();
-
+        Log.d("mqtt-triJsonFil11111eName", "Json111111111FileName: " + key);
         try {
             BufferedReader reader = new BufferedReader(new FileReader(file));
             String line;
@@ -87,19 +102,24 @@ public class AddDevice extends AppCompatActivity {
             FileWriter writer = new FileWriter(file);
             writer.write(jsonData.toString());
             writer.close();
-            uploadFileToS3();
+            uploadFileToS3(key);
         } catch (JSONException | IOException e) {
             e.printStackTrace();
         }
+
     }
-    private void uploadFileToS3() {
-        File file = new File(getFilesDir(), "user.json");
+    private void uploadFileToS3(String key) {
+        File file = new File(getFilesDir(), key);
 
         Amplify.Storage.uploadFile(
-                "user.json",
+                key,
                 file,
-                result -> Log.i("MyAmplifyApp", "Successfully uploaded: " + result.getKey()),
-                error -> Log.e("MyAmplifyApp", "Upload failed", error)
+                result ->{ Log.i("mqtt-triApp", "Successfully uploaded: " + result.getKey());
+                    Intent intent = new Intent(this, Home.class);
+                    startActivity(intent);
+                },
+                error -> Log.e("mqtt-triApp", "Upload failed", error)
         );
     }
+
 }

@@ -5,11 +5,13 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -44,11 +46,14 @@ import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.google.android.material.navigation.NavigationView;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.hivemq.client.mqtt.MqttClient;
 import com.hivemq.client.mqtt.MqttGlobalPublishFilter;
 import com.hivemq.client.mqtt.datatypes.MqttQos;
@@ -94,8 +99,15 @@ class MqttMessageReceiver extends AsyncTask<Void, String, Void> {
                         Log.d("mqtt-tri_SIZELIST", String.valueOf(deviceList.size()));
                         Log.d("mqtt-triGETNAMEDIVICE", device.getName());
                         if (device.getTopic().equals(topic)) {
-                            publishProgress(receivedMessage);  // Trigger onProgressUpdate
-                            device.updateStatisticValue(receivedMessage);
+                            Gson gson = new Gson();
+                            JsonObject jsonObject = gson.fromJson(receivedMessage, JsonObject.class);
+
+                            if (jsonObject.has("value")) {
+                               String numericValue = jsonObject.get("value").getAsString();
+                            publishProgress(numericValue);  // Trigger onProgressUpdate
+                            device.updateStatisticValue(numericValue);
+                            EventBus.getDefault().post(new DataUpdateEvent(numericValue));
+                            }
                         }
                     }
                 } else {
@@ -121,8 +133,9 @@ class MqttMessageReceiver extends AsyncTask<Void, String, Void> {
 
 public class Home extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private static final int LAYOUT_HOME = 0;
+    private static final int LAYOUT_ABOUT = 2;
     private String host, username, password, topic;
-    private Mqtt5BlockingClient mqttClient;
+    public static Mqtt5BlockingClient mqttClient;
     private TextView tvReceivedMessage;
 
     private int mCurrentLayout = LAYOUT_HOME;
@@ -147,7 +160,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
     private static final int REQUEST_CODE_ADD_ITEM = 1;
 
     //
-
+    List<String> topics = new ArrayList<>();
 
 
     @SuppressLint("MissingInflatedId")
@@ -172,6 +185,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         View inflatedView = getLayoutInflater().inflate(R.layout.activity_home_screen, frameLayout, true);
         View headerView = navigationView.getHeaderView(0);
         TextView navUsername = (TextView) headerView.findViewById(R.id.tvUsername);
+        showProgressDialog();
         try{
             Amplify.Auth.getCurrentUser(
                     result -> {
@@ -206,6 +220,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                finish();
                 Intent intent = new Intent(Home.this, AddDevice.class);
                 startActivityForResult(intent, REQUEST_CODE_ADD_ITEM);
             }
@@ -217,14 +232,29 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_ADD_ITEM && data != null) {
             Device newDevice = (Device) data.getSerializableExtra("new_Device");
-            added_device = newDevice;
+            String newTopic = newDevice.getTopic();
+            topics.add(newTopic);
             deviceList.add(newDevice);
             deviceAdapter.notifyDataSetChanged();
-            //subscribeToTopics(deviceList, );
+
         }
+
     }
 
+    private ProgressDialog progressDialog;
 
+    private void showProgressDialog() {
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("LOADING ....");
+        progressDialog.setCancelable(false); // Ngăn chặn việc đóng progress bar khi chạm vào màn hình
+        progressDialog.show();
+    }
+
+    private void dismissProgressDialog() {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+    }
 
     private void getInfo(String Username) throws InterruptedException {
 
@@ -241,6 +271,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
                             String jsonString = FileUtils.readFileToString(result.getFile(), StandardCharsets.UTF_8);
                             processConfig(jsonString);
                             Log.d("mqtt-tri", "read" + jsonString);
+                            dismissProgressDialog();
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         }
@@ -257,7 +288,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         try {
             JSONObject configObject = new JSONObject(jsonString);
             JSONArray devicesArray = configObject.getJSONArray("devices");
-            List<String> topics = new ArrayList<>();
+
 
             for (int i = 0; i < devicesArray.length(); i++) {
                 JSONObject deviceObject = devicesArray.getJSONObject(i);
@@ -390,13 +421,49 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
     }
 
     private void finishAndRestartApp() {
+        SignOut();
         finish(); // Finish the current activity
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent); // Restart the app by starting MainActivity
-        moveTaskToBack(true); // Move the task to the back of the stack
+//        Intent intent = new Intent(this, MainActivity.class);
+//        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+//        startActivity(intent); // Restart the app by starting MainActivity
+//        moveTaskToBack(true); // Move the task to the back of the stack
         android.os.Process.killProcess(android.os.Process.myPid()); // Kill the process
         System.exit(1); // Exit the app
+    }
+    private void SignOut() {
+        Amplify.Auth.signOut( signOutResult -> {
+            if (signOutResult instanceof AWSCognitoAuthSignOutResult.CompleteSignOut) {
+                // Sign Out completed fully and without errors.
+                Log.i("AuthQuickStart", "Signed out successfully");
+            } else if (signOutResult instanceof AWSCognitoAuthSignOutResult.PartialSignOut) {
+                // Sign Out completed with some errors. User is signed out of the device.
+                AWSCognitoAuthSignOutResult.PartialSignOut partialSignOutResult =
+                        (AWSCognitoAuthSignOutResult.PartialSignOut) signOutResult;
+
+                HostedUIError hostedUIError = partialSignOutResult.getHostedUIError();
+                if (hostedUIError != null) {
+                    Log.e("AuthQuickStart", "HostedUI Error", hostedUIError.getException());
+                    // Optional: Re-launch hostedUIError.getUrl() in a Custom tab to clear Cognito web session.
+                }
+
+                GlobalSignOutError globalSignOutError = partialSignOutResult.getGlobalSignOutError();
+                if (globalSignOutError != null) {
+                    Log.e("AuthQuickStart", "GlobalSignOut Error", globalSignOutError.getException());
+                    // Optional: Use escape hatch to retry revocation of globalSignOutError.getAccessToken().
+                }
+
+                RevokeTokenError revokeTokenError = partialSignOutResult.getRevokeTokenError();
+                if (revokeTokenError != null) {
+                    Log.e("AuthQuickStart", "RevokeToken Error", revokeTokenError.getException());
+                    // Optional: Use escape hatch to retry revocation of revokeTokenError.getRefreshToken().
+                }
+            } else if (signOutResult instanceof AWSCognitoAuthSignOutResult.FailedSignOut) {
+                AWSCognitoAuthSignOutResult.FailedSignOut failedSignOutResult =
+                        (AWSCognitoAuthSignOutResult.FailedSignOut) signOutResult;
+                // Sign Out failed with an exception, leaving the user signed in.
+                Log.e("AuthQuickStart", "Sign out Failed", failedSignOutResult.getException());
+            }
+        });
     }
     protected void onDestroy() {
         super.onDestroy();
@@ -408,6 +475,39 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        return false;
+        int id = item.getItemId();
+        if (id == R.id.nav_home) {
+            if (mCurrentLayout != LAYOUT_HOME) {
+                mCurrentLayout = LAYOUT_HOME;
+                Intent newintent = new Intent(Home.this, Home.class);
+                startActivity(newintent);
+            }
+        } else if (id == R.id.nav_guide) {
+            // Handle guide
+        } else if (id == R.id.nav_about) {
+            if (mCurrentLayout != LAYOUT_ABOUT) {
+                setLayout(R.layout.activity_about);
+                mCurrentLayout = LAYOUT_ABOUT;
+            }
+        } else if (id == R.id.nav_logout) {
+            signOut();
+        }
+        mDrawerLayout.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    private void setLayout(int layoutResId) {
+        FrameLayout frameLayout = findViewById(R.id.content_frame);
+        frameLayout.removeAllViews();
+
+        // Inflate the new layout
+        View inflatedView = getLayoutInflater().inflate(layoutResId, frameLayout, false);
+        frameLayout.addView(inflatedView);
+
+    }
+
+    private void restartApp() {
+        finish();
+        startActivity(getIntent());
     }
 }

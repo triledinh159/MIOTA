@@ -8,7 +8,7 @@ public class Device implements Serializable {
     private int id;
     private String device, topic, name, newValue;
     int type;
-    private String statisticValue;
+    private String statisticValue = "N/A";
     public Device(String type, String device, String topic, String name){
         this.type = Integer.parseInt(type);
         this.device = device;
@@ -43,6 +43,9 @@ public class Device implements Serializable {
     public void updateStatisticValue(String newValue) {
         Log.d("mqtt-tri3", "updateStatisticValue: " + newValue);
         this.statisticValue = newValue;
+    }
+    public String getStatistic(){
+        return statisticValue;
     }
 }
 
